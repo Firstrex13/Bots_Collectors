@@ -42,17 +42,17 @@ public class Resourse : MonoBehaviour
         _aimed = true;
     }
 
+    public void MakeCollected()
+    {
+        _collected = true;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<Storage>(out Storage storage))
+        if (other.TryGetComponent<Storage>(out Storage storage))
         {
             BroughtOnBase?.Invoke(this);
             storage.IncreaseCount();
-        }
-
-        if(other.TryGetComponent<Unit>(out _))
-        {
-            _collected |= true;
         }
     }
 }

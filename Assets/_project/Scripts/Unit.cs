@@ -14,7 +14,7 @@ public class Unit : MonoBehaviour
 
     [SerializeField] private bool _isFree;
 
-    [SerializeField] private bool _isHolding; 
+    [SerializeField] private bool _isHolding;
 
     private NavMeshAgent _agent;
     private Transform _transform;
@@ -83,9 +83,10 @@ public class Unit : MonoBehaviour
         {
             if (pickingObject.TryGetComponent<Resourse>(out Resourse resourse))
             {
-                if (resourse.Collected && _isHolding == false)
+                if (resourse.Collected == false && _isHolding == false)
                 {
                     _picker.PickUp(other);
+                    resourse.MakeCollected();
                     ReadyGoToStorage?.Invoke(this);
                     _isHolding = true;
                 }

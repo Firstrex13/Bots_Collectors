@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Camera))]
 
 public class CameraMove : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
+
+    private Input _inputActions;
 
     private Transform _transform;
     private int _screenBorder = 100;
@@ -13,6 +16,7 @@ public class CameraMove : MonoBehaviour
 
     private void Start()
     {
+        _inputActions = new Input();
         _transform = transform;
         _screenWidth = Screen.width;
         _screenHeigth = Screen.height;
@@ -27,19 +31,19 @@ public class CameraMove : MonoBehaviour
     {
         float speed = _moveSpeed * Time.deltaTime;
 
-        if (Input.mousePosition.x > _screenWidth - _screenBorder && Input.mousePosition.x < _screenWidth)
+        if (Mouse.current.position.ReadValue().x > _screenWidth - _screenBorder && Mouse.current.position.ReadValue().x < _screenWidth)
         {
             _transform.position += Vector3.right * speed;
         }
-        else if (Input.mousePosition.x > (_screenWidth - Screen.width) && Input.mousePosition.x < _screenWidth - (Screen.width - 100))
+        else if (Mouse.current.position.ReadValue().x > (_screenWidth - Screen.width) && Mouse.current.position.ReadValue().x < _screenWidth - (Screen.width - 100))
         {
             _transform.position += -Vector3.right * speed;
         }
-        else if (Input.mousePosition.y > _screenHeigth - 100 && Input.mousePosition.y < _screenHeigth)
+        else if (Mouse.current.position.ReadValue().y > _screenHeigth - 100 && Mouse.current.position.ReadValue().y < _screenHeigth)
         {
             _transform.position += Vector3.forward * speed;
         }
-        else if (Input.mousePosition.y > (_screenHeigth - Screen.height) && Input.mousePosition.y < _screenHeigth - (Screen.height - 100))
+        else if (Mouse.current.position.ReadValue().y > (_screenHeigth - Screen.height) && Mouse.current.position.ReadValue().y < _screenHeigth - (Screen.height - 100))
         {
             _transform.position += -Vector3.forward * speed;
         }

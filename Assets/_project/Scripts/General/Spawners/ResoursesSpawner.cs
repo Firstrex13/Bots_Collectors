@@ -14,7 +14,7 @@ public class ResoursesSpawner : MonoBehaviour
     private void Start()
     {
         _pool = new ObjectPool<Resourse>(_prefab, _count);
-       _createCoroutine = StartCoroutine(nameof(Create));
+        _createCoroutine = StartCoroutine(nameof(Create));
     }
 
     private void Update()
@@ -26,6 +26,12 @@ public class ResoursesSpawner : MonoBehaviour
         StopCoroutine(nameof(_createCoroutine));
     }
 
+    private void OnReturnToPool(Resourse resourse)
+    {
+        _pool.ReturnObject(resourse);
+        resourse.BroughtOnBase -= OnReturnToPool;
+    }
+
     private IEnumerator Create()
     {
         WaitForSeconds delay = new WaitForSeconds(_delay);
@@ -33,7 +39,8 @@ public class ResoursesSpawner : MonoBehaviour
         while (enabled)
         {
             yield return delay;
-            _pool.GetFromPool();
+            Resourse resourse = _pool.GetFromPool();
+            resourse.BroughtOnBase += OnReturnToPool;
         }
     }
 }

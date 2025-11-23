@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraRay : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class CameraRay : MonoBehaviour
 
     private void SetRay()
     {
-        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         Physics.Raycast(ray, out RaycastHit hitInfo, _rayDistance);
     }

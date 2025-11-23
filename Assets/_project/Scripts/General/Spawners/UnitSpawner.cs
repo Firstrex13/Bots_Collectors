@@ -4,11 +4,10 @@ public class UnitSpawner : MonoBehaviour
 {
     [SerializeField] private Unit _prefab;
 
-    public void Create(Transform position)
+    public Unit Create(Transform position)
     {
         Unit unit = Instantiate(_prefab, position.position, transform.rotation);
 
-        unit.Initialize();
-
+        return unit;
     }
 }

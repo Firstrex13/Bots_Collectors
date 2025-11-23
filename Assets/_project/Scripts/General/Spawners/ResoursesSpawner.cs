@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,16 +12,14 @@ public class ResoursesSpawner : MonoBehaviour
 
     private Coroutine _createCoroutine;
 
+    public event Action Created;
+
     private void Start()
     {
         _pool = new ObjectPool<Resourse>(_prefab, _count);
         _createCoroutine = StartCoroutine(nameof(Create));
     }
 
-    private void Update()
-    {
-
-    }
     private void OnDestroy()
     {
         StopCoroutine(nameof(_createCoroutine));
@@ -40,6 +39,7 @@ public class ResoursesSpawner : MonoBehaviour
         {
             yield return delay;
             Resourse resourse = _pool.GetFromPool();
+            Created?.Invoke();
             resourse.BroughtOnBase += OnReturnToPool;
         }
     }

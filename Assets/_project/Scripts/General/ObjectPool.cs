@@ -38,7 +38,6 @@ public class ObjectPool<T> where T : MonoBehaviour
     public void ReturnObject(T obj)
     {
         obj.gameObject.SetActive(false);
-
         _pool.Enqueue(obj);
     }
 
@@ -46,7 +45,6 @@ public class ObjectPool<T> where T : MonoBehaviour
     {
         T obj = UnityEngine.Object.Instantiate(_prefab);
         obj.gameObject.SetActive(false);
-
         return obj;
     }
 }

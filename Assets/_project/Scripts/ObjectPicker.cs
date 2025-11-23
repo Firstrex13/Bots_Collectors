@@ -21,8 +21,6 @@ public class ObjectPicker : MonoBehaviour
 
     public void PickUp(Collider collider)
     {
-
-
         if (collider.TryGetComponent(out PickingObject pickingObject) == false)
             return;
 
@@ -30,21 +28,19 @@ public class ObjectPicker : MonoBehaviour
         _currentObject.PickUp(transform, _holdDistance);
     }
 
-    private void NotifyAboutStatus()
-    {
-        BecameFree?.Invoke();
-        Debug.Log("пикер освободился");
-    }
-
     public void Drop()
     {
         if (_currentObject != null)
         {
-            _currentObject.Drop();
             _currentObject.Dropped += NotifyAboutStatus;
-            _currentObject = null;
-            Debug.Log("метод дроп");
+            _currentObject.Drop();
+            _currentObject = null;  
         }
+    }
+
+    private void NotifyAboutStatus()
+    {
+        BecameFree?.Invoke();
     }
 }
 

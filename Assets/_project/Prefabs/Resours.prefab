@@ -96,6 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eec135cf263c8c548a45b77d1751f289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Resours
+  Aimed: 0
+  _scanned: 0
+  _collected: 0
 --- !u!114 &5405762502552006065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b195747ffaae8a447b2253abdeaf9b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickingObject
+  _collider: {fileID: 4967475282842629832}
 --- !u!1 &8118784945054431055
 GameObject:
   m_ObjectHideFlags: 0

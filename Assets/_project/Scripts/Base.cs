@@ -10,9 +10,12 @@ public class Base : MonoBehaviour
     [SerializeField] private List<Unit> _units;
     [SerializeField] private Player _player;
     [SerializeField] private Storage _storage;
+    [SerializeField] private Transform _watingZone;
 
     private float _delay = 2f;
     private int _startCount = 3;
+
+    private Coroutine _createUnitsCoroutine;
 
     private void OnEnable()
     {
@@ -26,12 +29,14 @@ public class Base : MonoBehaviour
 
     private void Start()
     {
-        _player.PlayerInput.Player.Actions.performed += ctx => _radar.OnScanArea();
-
-        StartCoroutine(nameof(CreateUnits));
+       _createUnitsCoroutine = StartCoroutine(nameof(CreateUnits));
     }
 
-  
+    private void OnDestroy()
+    {
+        StopCoroutine(_createUnitsCoroutine);
+    }
+
     private IEnumerator CreateUnits()
     {
         WaitForSeconds delay = new WaitForSeconds(_delay);
@@ -41,7 +46,6 @@ public class Base : MonoBehaviour
             Unit unit = _unitSpawner.Create(_spawnPoint);
 
             unit.Initialize();
-            unit.ReadyGoToBase += SendUnitBack;
 
             _units.Add(unit);
             yield return delay;
@@ -50,8 +54,14 @@ public class Base : MonoBehaviour
 
     public void SendUnitBack(Unit unit)
     {
-        unit.GoToBase(_storage.transform.position);
-        unit.ReadyGoToBase -= SendUnitBack;
+        unit.GoToStorage(_storage.transform.position);
+        unit.ReadyGoToStorage -= SendUnitBack;
+    }
+
+    public void SendUnitToWaitingZone(Unit unit)
+    {
+        unit.GoToWaitngZone(_watingZone.transform.position);
+        unit.BecameFree -= SendUnitToWaitingZone;
     }
 
     private void SendForResourse()
@@ -62,11 +72,13 @@ public class Base : MonoBehaviour
             {
                 foreach (var unit in _units)
                 {
-                    if (unit.IsFree && !item.Collected)
+                    if (unit.IsFree && !item.Aimed)
                     {
                         unit.GoToResourse(item.transform.position);
                         unit.MakeUnitOcupied();
-                        item.MakeObjectCollected();
+                        item.MakeObjectAimed();
+                        unit.ReadyGoToStorage += SendUnitBack;
+                        unit.BecameFree += SendUnitToWaitingZone;
                     }
                 }
             }

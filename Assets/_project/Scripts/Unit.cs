@@ -8,17 +8,19 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
-    [SerializeField] private Rigidbody _rigidBody;
     [SerializeField] private float _speed;
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private ObjectPicker _picker;
 
     [SerializeField] private bool _isFree;
 
+    [SerializeField] private bool _isHolding; 
+
     private NavMeshAgent _agent;
     private Transform _transform;
 
-    public event Action<Unit> ReadyGoToBase;
+    public event Action<Unit> ReadyGoToStorage;
+    public event Action<Unit> BecameFree;
 
     public bool IsFree => _isFree;
 
@@ -34,8 +36,8 @@ public class Unit : MonoBehaviour
 
     private void Start()
     {
+        _isHolding = false;
         _agent = GetComponent<NavMeshAgent>();
-        _rigidBody = GetComponent<Rigidbody>();
         _transform = transform;
         MakeStepForward();
     }
@@ -48,11 +50,16 @@ public class Unit : MonoBehaviour
     public void GoToResourse(Vector3 position)
     {
         _agent.SetDestination(position);
-    } 
+    }
 
-    public void GoToBase(Vector3 position)
+    public void GoToStorage(Vector3 position)
     {
-        _agent.SetDestination(position);    
+        _agent.SetDestination(position);
+    }
+
+    public void GoToWaitngZone(Vector3 position)
+    {
+        _agent.SetDestination(position);
     }
 
     public void MakeUnitOcupied()
@@ -63,26 +70,33 @@ public class Unit : MonoBehaviour
     private void MakeFree()
     {
         _isFree = true;
-        Debug.Log("юнит освободился");
     }
 
     private void MakeStepForward()
     {
-        _transform.DOMove( Vector3.one, _speed);
+        _transform.DOMove(Vector3.one, _speed);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent<PickingObject>(out _))
+        if (other.TryGetComponent<PickingObject>(out PickingObject pickingObject))
         {
-            _picker.PickUp(other);
-            ReadyGoToBase?.Invoke(this);
-        } 
+            if (pickingObject.TryGetComponent<Resourse>(out Resourse resourse))
+            {
+                if (resourse.Collected && _isHolding == false)
+                {
+                    _picker.PickUp(other);
+                    ReadyGoToStorage?.Invoke(this);
+                    _isHolding = true;
+                }
+            }
+        }
 
-        if(other.TryGetComponent<Storage>(out _))
+        if (other.TryGetComponent<Storage>(out _) && _isHolding)
         {
-            Debug.Log("зашел в тригер");
-            _picker.Drop();           
+            _picker.Drop();
+            BecameFree?.Invoke(this);
+            _isHolding = false;
         }
     }
 }

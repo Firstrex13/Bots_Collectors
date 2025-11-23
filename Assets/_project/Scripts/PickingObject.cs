@@ -25,6 +25,5 @@ public class PickingObject : MonoBehaviour
         transform.SetParent(null);
         _rigidbody.isKinematic = false;
         Dropped?.Invoke();
-        Debug.Log(" событие Дропнулся");
     }
 }

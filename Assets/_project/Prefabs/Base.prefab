@@ -304,6 +304,7 @@ GameObject:
   - component: {fileID: 8642430849416617400}
   - component: {fileID: 7209698343000691164}
   - component: {fileID: 2578843616571841711}
+  - component: {fileID: 1865968125366019668}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -363,13 +364,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7e3feee5f44daa4f96f73e7b4893c7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Base
-  _radar: {fileID: 2578843616571841711}
+  _pickingObjectService: {fileID: 1865968125366019668}
   _spawnPoint: {fileID: 2113129633064774851}
   _unitSpawner: {fileID: 7209698343000691164}
-  _units: []
+  _units:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _player: {fileID: 0}
   _storage: {fileID: 1914884146947762431}
   _watingZone: {fileID: 6776372689588672068}
+  _resourseSpawner: {fileID: 0}
 --- !u!114 &7209698343000691164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,8 +401,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Radar
   _radius: 25
-  _resourses: []
   _mask:
     serializedVersion: 2
     m_Bits: 64
-  _resourseSpawner: {fileID: 0}
+--- !u!114 &1865968125366019668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6357828160701988159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feaf960deb0f14743b0b15a06a42b4ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickingObjectsService
+  _radar: {fileID: 2578843616571841711}

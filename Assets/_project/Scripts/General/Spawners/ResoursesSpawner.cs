@@ -8,6 +8,7 @@ public class ResoursesSpawner : MonoBehaviour
     [SerializeField] private int _count;
 
     private ObjectPool<Resourse> _pool;
+
     private float _delay = 3f;
 
     private Coroutine _createCoroutine;

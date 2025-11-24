@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 8250189733239800517}
   - component: {fileID: 4218423707030458341}
   - component: {fileID: 195791010712783108}
+  - component: {fileID: 437257406115567259}
   - component: {fileID: 992568602059368437}
   - component: {fileID: 418812243474002159}
-  - component: {fileID: 437257406115567259}
+  - component: {fileID: 2421841910597453015}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -112,37 +113,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &992568602059368437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2250948097495449986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f52a588b8b31ca458196eb626911462, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Unit
-  _speed: 2
-  _rotationSpeed: 0.2
-  _picker: {fileID: 418812243474002159}
-  _isFree: 0
---- !u!114 &418812243474002159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2250948097495449986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff2a6a64b89a67a41a7f41564aa2c2ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ObjectPicker
-  _takeDistance: 1
-  _holdDistance: 1
-  _currentObject: {fileID: 0}
 --- !u!195 &437257406115567259
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -165,6 +135,50 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &992568602059368437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2250948097495449986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f52a588b8b31ca458196eb626911462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Unit
+  _speed: 2
+  _rotationSpeed: 0.2
+  _picker: {fileID: 418812243474002159}
+  _isFree: 0
+  _isHolding: 0
+--- !u!114 &418812243474002159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2250948097495449986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff2a6a64b89a67a41a7f41564aa2c2ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectPicker
+  _takeDistance: 1
+  _holdDistance: 1
+  _currentObject: {fileID: 0}
+--- !u!114 &2421841910597453015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2250948097495449986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46c5662a68a639344b47f71049cb66b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitCollision
 --- !u!1 &3170090086632561994
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,12 @@ public class Unit : MonoBehaviour
     public event Action<Unit> BecameFree;
 
     public bool IsFree => _isFree;
+    public bool IsHolding => _isHolding;
+
+    private void Awake()
+    {
+        _agent = GetComponent<NavMeshAgent>();
+    }
 
     private void OnEnable()
     {
@@ -36,10 +42,10 @@ public class Unit : MonoBehaviour
 
     private void Start()
     {
+        _isFree = true;
         _isHolding = false;
-        _agent = GetComponent<NavMeshAgent>();
+
         _transform = transform;
-        MakeStepForward();
     }
 
     public void Initialize()
@@ -47,17 +53,7 @@ public class Unit : MonoBehaviour
         _isFree = true;
     }
 
-    public void GoToResourse(Vector3 position)
-    {
-        _agent.SetDestination(position);
-    }
-
-    public void GoToStorage(Vector3 position)
-    {
-        _agent.SetDestination(position);
-    }
-
-    public void GoToWaitngZone(Vector3 position)
+    public void GoToTarget(Vector3 position)
     {
         _agent.SetDestination(position);
     }
@@ -67,37 +63,39 @@ public class Unit : MonoBehaviour
         _isFree = false;
     }
 
+    public void MakeIsHolding()
+    {
+        _isHolding = true;
+    }
+
+    public void MakeNotIsHolding()
+    {
+        _isHolding = false;
+    }
+
+    public void DropObject()
+    {
+        _picker.Drop();
+    }
+
+    public void PickUpObject(Collider other)
+    {
+        _picker.PickUp(other);
+    }
+
+    public void SendReadyToGoStorageEvent()
+    {
+        ReadyGoToStorage?.Invoke(this);
+    }
+
+    public void SendMessageBecameFreeEvent()
+    {
+        BecameFree?.Invoke(this);
+    }
+
     private void MakeFree()
     {
         _isFree = true;
     }
-
-    private void MakeStepForward()
-    {
-        _transform.DOMove(Vector3.one, _speed);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent<PickingObject>(out PickingObject pickingObject))
-        {
-            if (pickingObject.TryGetComponent<Resourse>(out Resourse resourse))
-            {
-                if (resourse.Collected == false && _isHolding == false)
-                {
-                    _picker.PickUp(other);
-                    resourse.MakeCollected();
-                    ReadyGoToStorage?.Invoke(this);
-                    _isHolding = true;
-                }
-            }
-        }
-
-        if (other.TryGetComponent<Storage>(out _) && _isHolding)
-        {
-            _picker.Drop();
-            BecameFree?.Invoke(this);
-            _isHolding = false;
-        }
-    }
 }
+

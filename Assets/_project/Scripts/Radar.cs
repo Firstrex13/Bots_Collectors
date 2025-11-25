@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,29 +7,42 @@ public class Radar : MonoBehaviour
 {
     [SerializeField] private float _radius;
     [SerializeField] private LayerMask _mask;
+    [SerializeField] private float _period;
+
+    private Coroutine _scan;
 
     private Collider[] _colliders = new Collider[20];
 
-    public List<PickingObject> GetScanedObjects()
+    public event Action<PickingObject> ResoursesFound;
+
+    private void Start()
     {
-        int count = Physics.OverlapSphereNonAlloc(transform.position, _radius, _colliders, _mask);
+        _scan = StartCoroutine(Scan());
+    }
 
-        PickingObject pickingObject;
-        List<PickingObject> pickingObjects = new List<PickingObject>();
+    private void OnDestroy()
+    {
+        StopCoroutine(_scan);
+    }
 
-        for (int i = 0; i < count; ++i)
+    private IEnumerator Scan()
+    {
+        WaitForSeconds delay = new WaitForSeconds(_period);
+
+        while (enabled)
         {
-            if (_colliders[i].TryGetComponent<PickingObject>(out pickingObject))
+            yield return delay;
+            int count = Physics.OverlapSphereNonAlloc(transform.position, _radius, _colliders, _mask);
+
+            PickingObject pickingObject;
+
+            for (int i = 0; i < count; ++i)
             {
-                if (!pickingObject.Scanned)
+                if (_colliders[i].TryGetComponent<PickingObject>(out pickingObject))
                 {
-                    pickingObjects.Add(pickingObject);
-                    pickingObject.MakeObjectScanned();
-                    return pickingObjects;
+                    ResoursesFound?.Invoke(pickingObject);
                 }
             }
         }
-
-        return null;
     }
 }

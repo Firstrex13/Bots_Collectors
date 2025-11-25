@@ -179,6 +179,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c5662a68a639344b47f71049cb66b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitCollision
+  _unit: {fileID: 992568602059368437}
+  _objectPicker: {fileID: 418812243474002159}
 --- !u!1 &3170090086632561994
 GameObject:
   m_ObjectHideFlags: 0

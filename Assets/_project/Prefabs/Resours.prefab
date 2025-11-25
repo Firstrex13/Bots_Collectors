@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 4967475282842629832}
   - component: {fileID: 4498402195729443483}
   - component: {fileID: 1397488363643928220}
-  - component: {fileID: 5405762502552006065}
-  - component: {fileID: 2336587721849173167}
   m_Layer: 6
   m_Name: Resours
   m_TagString: Untagged
@@ -100,33 +98,6 @@ MonoBehaviour:
   _aimed: 0
   _scanned: 0
   _collected: 0
---- !u!114 &5405762502552006065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5270403111446284421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b195747ffaae8a447b2253abdeaf9b6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickingObject
-  _aimed: 0
-  _scanned: 0
-  _collected: 0
---- !u!114 &2336587721849173167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5270403111446284421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef92d4bb6306e5d48b2559a4a59a4430, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickingObjectCollision
 --- !u!1 &8118784945054431055
 GameObject:
   m_ObjectHideFlags: 0

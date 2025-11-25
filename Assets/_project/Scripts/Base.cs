@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Base : MonoBehaviour
 {
-    [SerializeField] private PickingObjectsService _pickingObjectService;
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private List<Unit> _units;
     [SerializeField] private Player _player;
     [SerializeField] private Storage _storage;
+    [SerializeField] private StorageCollision _storageCollision;
     [SerializeField] private Transform _watingZone;
-    [SerializeField] private ResoursesSpawner _resourseSpawner;
+    [SerializeField] private Radar _radar;
+    [SerializeField] private PickingObjectsService _pickingObjectsService;
 
     private float _delay = 2f;
     private int _startCount = 3;
@@ -20,30 +21,31 @@ public class Base : MonoBehaviour
 
     private void OnEnable()
     {
-        _resourseSpawner.Created += SendForResourse;
+        _pickingObjectsService.ListUpdated += SendForResourse;
+        _storageCollision.ResourseDropped += _pickingObjectsService.RemoveResourseFromList;
     }
 
     private void OnDisable()
     {
-        _resourseSpawner.Created -= SendForResourse;
+        _pickingObjectsService.ListUpdated -= SendForResourse;
+        _storageCollision.ResourseDropped -= _pickingObjectsService.RemoveResourseFromList;
     }
 
     private void Start()
     {
-        if(_units.Count < _startCount)
-        _createUnitsCoroutine = StartCoroutine(nameof(CreateUnits));
+        if (_units.Count < _startCount)
+            _createUnitsCoroutine = StartCoroutine(CreateUnits());
     }
 
     private void OnDestroy()
     {
-        if(_createUnitsCoroutine != null)
-        StopCoroutine(_createUnitsCoroutine);
+        if (_createUnitsCoroutine != null)
+            StopCoroutine(_createUnitsCoroutine);
     }
 
     private void OnValidate()
     {
-        _resourseSpawner ??= GetComponent<ResoursesSpawner>();
-        _pickingObjectService ??= GetComponent<PickingObjectsService>();
+        _radar ??= GetComponent<Radar>();
     }
 
     private IEnumerator CreateUnits()
@@ -54,7 +56,6 @@ public class Base : MonoBehaviour
         {
             Unit unit = _unitSpawner.Create(_spawnPoint);
 
-            unit.Initialize();
             unit.GoToTarget(_watingZone.transform.position);
             _units.Add(unit);
 
@@ -74,25 +75,26 @@ public class Base : MonoBehaviour
         unit.BecameFree -= SendUnitToWaitingZone;
     }
 
-    private void SendForResourse()
+    private void SendForResourse(PickingObject pickingObject)
     {
-        List<PickingObject> pickingObjects = _pickingObjectService.GetPickingObjectsFree();
-
-        if (pickingObjects != null)
+        if (pickingObject != null)
         {
-            foreach (var item in pickingObjects)
+            foreach (var unit in _units)
             {
-                foreach (var unit in _units)
+                if (unit.TryGetComponent<ObjectPicker>(out ObjectPicker picker))
                 {
-                    if (unit.IsFree && !item.Aimed)
+                    if (picker.CurrentObject != null)
                     {
-                        unit.GoToTarget(item.transform.position);
-                        unit.MakeUnitOcupied();
-                        item.MakeObjectAimed();
-                        unit.ReadyGoToStorage += SendUnitBack;
-                        unit.BecameFree += SendUnitToWaitingZone;
+                        return;
                     }
+
+                    unit.GoToTarget(pickingObject.transform.position);
+                    _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
+                    unit.ReadyGoToStorage += SendUnitBack;
+                    unit.BecameFree += SendUnitToWaitingZone;
+                    return;
                 }
+
             }
         }
     }

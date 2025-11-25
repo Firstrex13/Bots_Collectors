@@ -1320,17 +1320,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1776353763 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2891981358627911338, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
-  m_PrefabInstance: {fileID: 2772010924607165852}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef92d4bb6306e5d48b2559a4a59a4430, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickingObjectCollision
 --- !u!1001 &2772010924607165852
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1387,18 +1376,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Base
       objectReference: {fileID: 0}
-    - target: {fileID: 7317708773574852524, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
-      propertyPath: _resourseSpawner
-      value: 
-      objectReference: {fileID: 1764065914}
     - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
       propertyPath: _player
       value: 
       objectReference: {fileID: 1601084081}
-    - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
-      propertyPath: _storageCollision
-      value: 
-      objectReference: {fileID: 1776353763}
     - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
       propertyPath: '_units.Array.data[0]'
       value: 

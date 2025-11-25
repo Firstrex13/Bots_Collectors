@@ -8,16 +8,7 @@ public class ObjectPicker : MonoBehaviour
 
     [SerializeField] private PickingObject _currentObject;
 
-    public event Action BecameFree;
-
-    private void OnDisable()
-    {
-        if (_currentObject == null)
-            return;
-
-        if (_currentObject != null)
-            _currentObject.Dropped -= NotifyAboutStatus;
-    }
+    public PickingObject CurrentObject => _currentObject;
 
     public void PickUp(Collider collider)
     {
@@ -32,15 +23,9 @@ public class ObjectPicker : MonoBehaviour
     {
         if (_currentObject != null)
         {
-            _currentObject.Dropped += NotifyAboutStatus;
             _currentObject.Drop();
             _currentObject = null;  
         }
-    }
-
-    private void NotifyAboutStatus()
-    {
-        BecameFree?.Invoke();
     }
 }
 

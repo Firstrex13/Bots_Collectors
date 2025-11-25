@@ -3,7 +3,7 @@ using UnityEngine;
 
 [SelectionBase]
 
-public class Resourse : MonoBehaviour
+public class Resourse : PickingObject
 {
     private const float _zone = 20;
     private const float _height = 0.5f;

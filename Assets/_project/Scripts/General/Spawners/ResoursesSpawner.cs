@@ -14,16 +14,17 @@ public class ResoursesSpawner : MonoBehaviour
     private Coroutine _createCoroutine;
 
     public event Action Created;
+    public event Action<Resourse> Returned;
 
     private void Start()
     {
         _pool = new ObjectPool<Resourse>(_prefab, _count);
-        _createCoroutine = StartCoroutine(nameof(Create));
+        _createCoroutine = StartCoroutine(Create());
     }
 
     private void OnDestroy()
     {
-        StopCoroutine(nameof(_createCoroutine));
+        StopCoroutine(_createCoroutine);
     }
 
     private void OnReturnToPool(Resourse resourse)
@@ -42,6 +43,7 @@ public class ResoursesSpawner : MonoBehaviour
             Resourse resourse = _pool.GetFromPool();
             Created?.Invoke();
             resourse.BroughtOnBase += OnReturnToPool;
+            Returned?.Invoke(resourse);
         }
     }
 }

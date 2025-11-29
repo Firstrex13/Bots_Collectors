@@ -20,7 +20,7 @@ public class StorageCollision : MonoBehaviour
             {
                 if (picker.CurrentObject.TryGetComponent<PickingObject>(out PickingObject pickingObject))
                 {
-                    pickingObject.Drop();
+                    picker.Drop();
                     _storage.IncreaseCount();
                     ResourseDropped?.Invoke(pickingObject);
                 }

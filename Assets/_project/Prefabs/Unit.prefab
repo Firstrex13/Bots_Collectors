@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 437257406115567259}
   - component: {fileID: 992568602059368437}
   - component: {fileID: 418812243474002159}
-  - component: {fileID: 2421841910597453015}
-  m_Layer: 0
+  - component: {fileID: 4021143273817135787}
+  m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 212.82
-  m_StoppingDistance: 0.6
+  m_StoppingDistance: 0.8
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -150,8 +150,7 @@ MonoBehaviour:
   _speed: 2
   _rotationSpeed: 0.2
   _picker: {fileID: 418812243474002159}
-  _isFree: 0
-  _isHolding: 0
+  _mover: {fileID: 4021143273817135787}
 --- !u!114 &418812243474002159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,7 +166,8 @@ MonoBehaviour:
   _takeDistance: 1
   _holdDistance: 1
   _currentObject: {fileID: 0}
---- !u!114 &2421841910597453015
+  _aimedObject: {fileID: 0}
+--- !u!114 &4021143273817135787
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,11 +176,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2250948097495449986}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46c5662a68a639344b47f71049cb66b4, type: 3}
+  m_Script: {fileID: 11500000, guid: f4d08575fb742674291ba0862b047946, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitCollision
-  _unit: {fileID: 992568602059368437}
-  _objectPicker: {fileID: 418812243474002159}
+  m_EditorClassIdentifier: Assembly-CSharp::UnitMover
 --- !u!1 &3170090086632561994
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +190,7 @@ GameObject:
   - component: {fileID: 4488420498969450005}
   - component: {fileID: 1972617550927342045}
   - component: {fileID: 9117588268016359555}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +279,7 @@ GameObject:
   - component: {fileID: 8561238329207269893}
   - component: {fileID: 4338254994680932805}
   - component: {fileID: 3802769076510079308}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}

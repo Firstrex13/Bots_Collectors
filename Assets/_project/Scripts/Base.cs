@@ -6,7 +6,8 @@ public class Base : MonoBehaviour
 {
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private UnitSpawner _unitSpawner;
-    [SerializeField] private List<Unit> _units;
+    [SerializeField] private List<Unit> _freeUnits;
+    [SerializeField] private List<Unit> _ocupiedUnits;
     [SerializeField] private Player _player;
     [SerializeField] private Storage _storage;
     [SerializeField] private StorageCollision _storageCollision;
@@ -14,33 +15,37 @@ public class Base : MonoBehaviour
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
 
-    private float _delay = 2f;
+    private float _delay = 3f;
     private int _startCount = 3;
 
     private Coroutine _createUnitsCoroutine;
+    private Coroutine _sendUnitsCoroutine;
 
     private void OnEnable()
     {
-        _pickingObjectsService.ListUpdated += SendForResourse;
-        _storageCollision.ResourseDropped += _pickingObjectsService.RemoveResourseFromList;
+        _radar.ResoursesFound += _pickingObjectsService.FillList;
+        _storageCollision.ResourseDropped += _pickingObjectsService.RemoveFromList;
     }
 
     private void OnDisable()
     {
-        _pickingObjectsService.ListUpdated -= SendForResourse;
-        _storageCollision.ResourseDropped -= _pickingObjectsService.RemoveResourseFromList;
+        _radar.ResoursesFound -= _pickingObjectsService.FillList;
+        _storageCollision.ResourseDropped -= _pickingObjectsService.RemoveFromList;
     }
 
     private void Start()
     {
-        if (_units.Count < _startCount)
+        if (_freeUnits.Count < _startCount)
             _createUnitsCoroutine = StartCoroutine(CreateUnits());
+        _sendUnitsCoroutine = StartCoroutine(SendUnitsCoroutine());
     }
 
     private void OnDestroy()
     {
         if (_createUnitsCoroutine != null)
             StopCoroutine(_createUnitsCoroutine);
+
+
     }
 
     private void OnValidate()
@@ -56,45 +61,79 @@ public class Base : MonoBehaviour
         {
             Unit unit = _unitSpawner.Create(_spawnPoint);
 
-            unit.GoToTarget(_watingZone.transform.position);
-            _units.Add(unit);
+            if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
+            {
+                mover.GoToTarget(_watingZone.transform.position);
+                _freeUnits.Add(unit);
 
-            yield return delay;
+                yield return delay;
+            }
         }
     }
 
-    public void SendUnitBack(Unit unit)
+    public void SendUnitBack(ObjectPicker picker)
     {
-        unit.GoToTarget(_storage.transform.position);
-        unit.ReadyGoToStorage -= SendUnitBack;
+        if (picker.TryGetComponent<UnitMover>(out UnitMover mover))
+        {
+            mover.GoToTarget(_storage.transform.position);
+            picker.GotObject -= SendUnitBack;
+        }
     }
 
     public void SendUnitToWaitingZone(Unit unit)
     {
-        unit.GoToTarget(_watingZone.transform.position);
-        unit.BecameFree -= SendUnitToWaitingZone;
+        if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
+        {
+            mover.GoToTarget(_watingZone.transform.position);
+            _freeUnits.Add(unit);
+            _ocupiedUnits.Remove(unit);
+            unit.BecameFree -= SendUnitToWaitingZone;
+        }
+    }
+
+    private IEnumerator SendUnitsCoroutine()
+    {
+        WaitForSeconds delay = new WaitForSeconds(_delay);
+
+        while (enabled)
+        {
+            yield return delay;
+
+            List<PickingObject> pickingObjects = _pickingObjectsService.GetPickingObjects();
+
+            if (pickingObjects.Count > 0)
+            {
+                for (int i = 0; i < pickingObjects.Count; i++)
+                {
+                    SendForResourse(pickingObjects[i]);
+                    pickingObjects[i].Dropped += _pickingObjectsService.RemoveFromList;
+                }
+            }
+        }
     }
 
     private void SendForResourse(PickingObject pickingObject)
     {
-        if (pickingObject != null)
+        foreach (var unit in _freeUnits)
         {
-            foreach (var unit in _units)
+            if (unit.TryGetComponent<ObjectPicker>(out ObjectPicker picker))
             {
-                if (unit.TryGetComponent<ObjectPicker>(out ObjectPicker picker))
+                if (picker.CurrentObject != null)
                 {
-                    if (picker.CurrentObject != null)
-                    {
-                        return;
-                    }
-
-                    unit.GoToTarget(pickingObject.transform.position);
-                    _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
-                    unit.ReadyGoToStorage += SendUnitBack;
-                    unit.BecameFree += SendUnitToWaitingZone;
                     return;
                 }
 
+                if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
+                {
+                    picker.SetAime(pickingObject);
+                    _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
+                    picker.GotObject += SendUnitBack;
+                    pickingObject.Dropped += _pickingObjectsService.RemoveFromList;
+                    unit.BecameFree += SendUnitToWaitingZone;
+                    _ocupiedUnits.Add(unit);
+                    _freeUnits.Remove(unit);
+                    return;
+                }
             }
         }
     }

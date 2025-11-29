@@ -386,6 +386,7 @@ MonoBehaviour:
   - {fileID: 0}
   _player: {fileID: 0}
   _storage: {fileID: 1914884146947762431}
+  _storageCollision: {fileID: 2891981358627911338}
   _watingZone: {fileID: 6776372689588672068}
   _radar: {fileID: 2578843616571841711}
   _pickingObjectsService: {fileID: 7317708773574852524}
@@ -431,7 +432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feaf960deb0f14743b0b15a06a42b4ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickingObjectsService
-  _radar: {fileID: 2578843616571841711}
   _resourseSpawner: {fileID: 0}
   _pickingObjectsFree: []
   _pickingObjectsOcupaied: []

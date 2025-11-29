@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PickingObjectsService : MonoBehaviour
 {
-    [SerializeField] private Radar _radar;
     [SerializeField] private ResoursesSpawner _resourseSpawner;
 
     [SerializeField] private List<PickingObject> _pickingObjectsFree = new List<PickingObject>();
@@ -12,21 +12,14 @@ public class PickingObjectsService : MonoBehaviour
 
     public event Action<PickingObject> ListUpdated;
 
-    private void OnEnable()
-    {
-        _radar.ResoursesFound += FillList;
-        _resourseSpawner.Returned += PutResourseInOcupiedList;
-    }
-
-    private void OnDisable()
-    {
-        _radar.ResoursesFound -= FillList;
-        _resourseSpawner.Returned -= PutResourseInOcupiedList;
-    }
-
     public void FillList(PickingObject pickingObject)
     {
         if (_pickingObjectsFree.Contains(pickingObject))
+        {
+            return;
+        }
+
+        if (_pickingObjectsOcupaied.Contains(pickingObject))
         {
             return;
         }
@@ -41,9 +34,14 @@ public class PickingObjectsService : MonoBehaviour
         _pickingObjectsFree.Remove(resourse);
     }
 
-    public void RemoveResourseFromList(PickingObject pickingObject)
+    public void RemoveFromList(PickingObject pickingObject)
     {
         _pickingObjectsOcupaied.Remove(pickingObject);
+    }
+
+    public List<PickingObject> GetPickingObjects()
+    {
+        return _pickingObjectsFree.ToList();
     }
 }
 

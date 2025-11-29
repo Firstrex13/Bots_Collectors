@@ -1,7 +1,5 @@
 using System;
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.AI;
 
 [SelectionBase]
 [RequireComponent(typeof(Rigidbody))]
@@ -11,36 +9,27 @@ public class Unit : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private ObjectPicker _picker;
+    [SerializeField] private UnitMover _mover;
 
-    private NavMeshAgent _agent;
-    private Transform _transform;
-
-    public event Action<Unit> ReadyGoToStorage;
     public event Action<Unit> BecameFree;
 
-    private void Awake()
+    private void OnEnable()
     {
-        _agent = GetComponent<NavMeshAgent>();
+        _picker.GotTarget += _mover.GoToTarget;
+        _picker.HaveNoCurrentObject += SendMessageBecameFreeEvent;
+
     }
 
-    public void GoToTarget(Vector3 position)
+    private void OnDisable()
     {
-        _agent.SetDestination(position);
+        _picker.GotTarget -= _mover.GoToTarget;
+        _picker.HaveNoCurrentObject -= SendMessageBecameFreeEvent;
+
     }
 
     public void DropObject()
     {
         _picker.Drop();
-    }
-
-    public void PickUpObject(Collider other)
-    {
-        _picker.PickUp(other);
-    }
-
-    public void SendReadyToGoStorageEvent()
-    {
-        ReadyGoToStorage?.Invoke(this);
     }
 
     public void SendMessageBecameFreeEvent()

@@ -5,7 +5,7 @@ public class PickingObject : MonoBehaviour
 {
     private Rigidbody _rigidbody;
 
-    public event Action Dropped;
+    public event Action<PickingObject> Dropped;
 
     private void Start()
     {
@@ -24,6 +24,10 @@ public class PickingObject : MonoBehaviour
     {
         transform.SetParent(null);
         _rigidbody.isKinematic = false;
-        Dropped?.Invoke();
+        Dropped?.Invoke(this);
+        if (gameObject.TryGetComponent<Resourse>(out Resourse resourse))
+        {
+            resourse.SendMessageBroughtOnBaseEvent();
+        }
     }
 }

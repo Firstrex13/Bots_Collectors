@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class ResoursesSpawner : MonoBehaviour
 {
-    [SerializeField] private Resourse _prefab;
+    [SerializeField] private PickingObject _prefab;
     [SerializeField] private int _count;
 
-    private ObjectPool<Resourse> _pool;
+    private ObjectPool<PickingObject> _pool;
 
     private float _delay = 3f;
 
     private Coroutine _createCoroutine;
 
     public event Action Created;
-    public event Action<Resourse> Returned;
+    public event Action<PickingObject> Returned;
 
     private void Start()
     {
-        _pool = new ObjectPool<Resourse>(_prefab, _count);
+        _pool = new ObjectPool<PickingObject>(_prefab, _count);
         _createCoroutine = StartCoroutine(Create());
     }
 
@@ -27,10 +27,10 @@ public class ResoursesSpawner : MonoBehaviour
         StopCoroutine(_createCoroutine);
     }
 
-    private void OnReturnToPool(Resourse resourse)
+    private void OnReturnToPool(PickingObject resourse)
     {
         _pool.ReturnObject(resourse);
-        resourse.BroughtOnBase -= OnReturnToPool;
+        resourse.Dropped -= OnReturnToPool;
     }
 
     private IEnumerator Create()
@@ -40,9 +40,9 @@ public class ResoursesSpawner : MonoBehaviour
         while (enabled)
         {
             yield return delay;
-            Resourse resourse = _pool.GetFromPool();
+            PickingObject resourse = _pool.GetFromPool();
             Created?.Invoke();
-            resourse.BroughtOnBase += OnReturnToPool;
+            resourse.Dropped += OnReturnToPool;
             Returned?.Invoke(resourse);
         }
     }

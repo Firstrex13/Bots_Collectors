@@ -8,7 +8,6 @@ public class Base : MonoBehaviour
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private List<Unit> _freeUnits;
     [SerializeField] private List<Unit> _ocupiedUnits;
-    [SerializeField] private Player _player;
     [SerializeField] private Storage _storage;
     [SerializeField] private StorageCollision _storageCollision;
     [SerializeField] private Transform _watingZone;
@@ -44,8 +43,8 @@ public class Base : MonoBehaviour
     {
         if (_createUnitsCoroutine != null)
             StopCoroutine(_createUnitsCoroutine);
-
-
+        if (_sendUnitsCoroutine != null)
+            StopCoroutine(_sendUnitsCoroutine);
     }
 
     private void OnValidate()
@@ -106,7 +105,6 @@ public class Base : MonoBehaviour
                 for (int i = 0; i < pickingObjects.Count; i++)
                 {
                     SendForResourse(pickingObjects[i]);
-                    pickingObjects[i].Dropped += _pickingObjectsService.RemoveFromList;
                 }
             }
         }
@@ -128,7 +126,6 @@ public class Base : MonoBehaviour
                     picker.SetAime(pickingObject);
                     _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
                     picker.GotObject += SendUnitBack;
-                    pickingObject.Dropped += _pickingObjectsService.RemoveFromList;
                     unit.BecameFree += SendUnitToWaitingZone;
                     _ocupiedUnits.Add(unit);
                     _freeUnits.Remove(unit);

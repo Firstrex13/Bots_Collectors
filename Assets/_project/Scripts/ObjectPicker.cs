@@ -31,7 +31,7 @@ public class ObjectPicker : MonoBehaviour
             }
         }
 
-        if(_currentObject != null)
+        if (_currentObject != null)
         {
             GotObject?.Invoke(this);
         }
@@ -45,7 +45,9 @@ public class ObjectPicker : MonoBehaviour
         }
 
         if (_aimedObject.TryGetComponent(out PickingObject pickingObject) == false)
+        {
             return;
+        }
 
         _currentObject = pickingObject;
         _currentObject.PickUp(transform, _holdDistance);

@@ -3,9 +3,23 @@ using UnityEngine;
 
 public class PickingObject : MonoBehaviour
 {
+    private const float _zone = 20;
+    private const float _height = 0.5f;
+
+    private Transform _transform;
     private Rigidbody _rigidbody;
 
     public event Action<PickingObject> Dropped;
+
+    private void Awake()
+    {
+        _transform = transform;
+    }
+
+    private void OnEnable()
+    {
+        _transform.position = new Vector3(UnityEngine.Random.Range(-_zone, _zone), _height, UnityEngine.Random.Range(-_zone, _zone));
+    }
 
     private void Start()
     {
@@ -25,9 +39,5 @@ public class PickingObject : MonoBehaviour
         transform.SetParent(null);
         _rigidbody.isKinematic = false;
         Dropped?.Invoke(this);
-        if (gameObject.TryGetComponent<Resourse>(out Resourse resourse))
-        {
-            resourse.SendMessageBroughtOnBaseEvent();
-        }
     }
 }

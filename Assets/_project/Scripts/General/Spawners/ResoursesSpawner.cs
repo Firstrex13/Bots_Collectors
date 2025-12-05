@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ResoursesSpawner : MonoBehaviour
 {
+    private const float _zone = 20;
+    private const float _height = 0.5f;
+
     [SerializeField] private PickingObject _prefab;
     [SerializeField] private int _count;
 
@@ -49,6 +52,7 @@ public class ResoursesSpawner : MonoBehaviour
             PickingObject resourse = _pool.GetFromPool();
             Created?.Invoke();
             resourse.Dropped += OnReturnToPool;
+            resourse.Initialize(new Vector3(UnityEngine.Random.Range(-_zone, _zone), _height, UnityEngine.Random.Range(-_zone, _zone)));
             Returned?.Invoke(resourse);
         }
     }

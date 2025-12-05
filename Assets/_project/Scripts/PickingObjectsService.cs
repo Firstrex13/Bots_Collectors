@@ -5,14 +5,12 @@ using UnityEngine;
 
 public class PickingObjectsService : MonoBehaviour
 {
-    [SerializeField] private ResoursesSpawner _resourseSpawner;
-
     [SerializeField] private List<PickingObject> _pickingObjectsFree = new List<PickingObject>();
     [SerializeField] private List<PickingObject> _pickingObjectsOcupaied = new List<PickingObject>();
 
     public event Action<PickingObject> ListUpdated;
 
-    public void FillList(PickingObject pickingObject)
+    public void AddToList(PickingObject pickingObject)
     {
         if (_pickingObjectsFree.Contains(pickingObject))
         {
@@ -37,11 +35,6 @@ public class PickingObjectsService : MonoBehaviour
     public void RemoveFromList(PickingObject pickingObject)
     {
         _pickingObjectsOcupaied.Remove(pickingObject);
-    }
-
-    public List<PickingObject> GetPickingObjects()
-    {
-        return _pickingObjectsFree.ToList();
     }
 }
 

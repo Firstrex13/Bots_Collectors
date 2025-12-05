@@ -1399,6 +1399,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1764065914}
     - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
+      propertyPath: _resourseSpawner
+      value: 
+      objectReference: {fileID: 1764065914}
+    - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
       propertyPath: _freeUnits.Array.size
       value: 3
       objectReference: {fileID: 0}

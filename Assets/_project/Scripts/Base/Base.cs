@@ -12,6 +12,7 @@ public class Base : MonoBehaviour
     [SerializeField] private Storage _storage;
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
+    [SerializeField] private ResoursesSpawner _resourseSpawner;
 
     private float _delay = 3f;
     private int _startCount = 3;
@@ -20,16 +21,17 @@ public class Base : MonoBehaviour
 
     private void OnEnable()
     {
-        _radar.ResoursesFound += _pickingObjectsService.FillList;
+        _radar.ResoursesFound += _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated += OnResourseFound;
+        _resourseSpawner.Returned += _pickingObjectsService.RemoveFromList;
 
     }
 
     private void OnDisable()
     {
-        _radar.ResoursesFound -= _pickingObjectsService.FillList;
+        _radar.ResoursesFound -= _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated -= OnResourseFound;
-
+        _resourseSpawner.Returned -= _pickingObjectsService.RemoveFromList;
     }
 
     private void Start()
@@ -73,6 +75,8 @@ public class Base : MonoBehaviour
 
     private void SendForResourse(PickingObject pickingObject)
     {
+        pickingObject.Dropped += _storage.IncreaseCount;
+
         foreach (var unit in _freeUnits)
         {
             if (unit.TryGetComponent<ObjectPicker>(out ObjectPicker picker))
@@ -93,6 +97,7 @@ public class Base : MonoBehaviour
             }
         }
     }
+
     private void MoveUnitToFree(Unit unit)
     {
         unit.BecameFree -= MoveUnitToFree;

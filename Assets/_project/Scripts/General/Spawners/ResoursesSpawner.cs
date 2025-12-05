@@ -39,7 +39,7 @@ public class ResoursesSpawner : MonoBehaviour
     private void OnReturnToPool(PickingObject resourse)
     {
         _pool.ReturnObject(resourse);
-        resourse.Dropped -= OnReturnToPool;
+        resourse.ReadyToBackToPull -= OnReturnToPool;
     }
 
     private IEnumerator Create()
@@ -51,9 +51,9 @@ public class ResoursesSpawner : MonoBehaviour
             yield return delay;
             PickingObject resourse = _pool.GetFromPool();
             Created?.Invoke();
-            resourse.Dropped += OnReturnToPool;
+            resourse.ReadyToBackToPull += OnReturnToPool;
             resourse.Initialize(new Vector3(UnityEngine.Random.Range(-_zone, _zone), _height, UnityEngine.Random.Range(-_zone, _zone)));
             Returned?.Invoke(resourse);
         }
-    }
+    } 
 }

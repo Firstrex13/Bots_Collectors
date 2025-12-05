@@ -6,18 +6,15 @@ public class PickingObject : MonoBehaviour
     private Transform _transform;
     private Rigidbody _rigidbody;
 
-    public event Action<PickingObject> Dropped;
+    public event Action<PickingObject> ReadyToBackToPull;
+    public event Action Dropped;
 
     private void Awake()
     {
+        _rigidbody = GetComponent<Rigidbody>();
         _transform = transform;
     }
 
-    private void Start()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-    }
-    
     public void Initialize(Vector3 position)
     {
         _transform.position = position;
@@ -35,6 +32,7 @@ public class PickingObject : MonoBehaviour
     {
         transform.SetParent(null);
         _rigidbody.isKinematic = false;
-        Dropped?.Invoke(this);
+        ReadyToBackToPull?.Invoke(this);
+        Dropped?.Invoke();
     }
 }

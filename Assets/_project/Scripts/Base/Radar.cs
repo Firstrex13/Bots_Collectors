@@ -36,8 +36,6 @@ public class Radar : MonoBehaviour
 
             PickingObject pickingObject;
 
-            Debug.Log("Scanning");
-
             for (int i = 0; i < count; ++i)
             {
                 if (_colliders[i].TryGetComponent<PickingObject>(out pickingObject))

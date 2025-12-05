@@ -9,33 +9,9 @@ public class ObjectPicker : MonoBehaviour
     [SerializeField] private PickingObject _currentObject;
     [SerializeField] private PickingObject _aimedObject;
 
-    private const float distanceToPickUp = 1f;
-
-    public PickingObject CurrentObject => _currentObject;
-
-    public event Action<Vector3> GotTarget;
-    public event Action<ObjectPicker> GotObject;
     public event Action HaveNoCurrentObject;
 
-    private void Update()
-    {
-        if (_aimedObject != null)
-        {
-            float distanceToTarget;
-
-            distanceToTarget = Vector3.Distance(_aimedObject.transform.position, transform.position);
-
-            if (distanceToTarget <= distanceToPickUp)
-            {
-                PickUp();
-            }
-        }
-
-        if (_currentObject != null)
-        {
-            GotObject?.Invoke(this);
-        }
-    }
+    public PickingObject CurrentObject => _currentObject;
 
     public void PickUp()
     {
@@ -44,13 +20,12 @@ public class ObjectPicker : MonoBehaviour
             return;
         }
 
-        if (_aimedObject.TryGetComponent(out PickingObject pickingObject) == false)
+        if (_aimedObject != null)
         {
-            return;
+            Debug.Log("Picked");
+            _currentObject = _aimedObject;
+            _currentObject.PickUp(transform, _holdDistance);
         }
-
-        _currentObject = pickingObject;
-        _currentObject.PickUp(transform, _holdDistance);
     }
 
     public void Drop()
@@ -60,15 +35,12 @@ public class ObjectPicker : MonoBehaviour
             _currentObject.Drop();
             _currentObject = null;
             HaveNoCurrentObject?.Invoke();
-
         }
     }
 
-    public void SetAime(PickingObject pickingObject)
+    public void SetAimedObject(PickingObject pickingObject)
     {
-        _aimedObject = null;
         _aimedObject = pickingObject;
-        GotTarget?.Invoke(_aimedObject.transform.position);
     }
 }
 

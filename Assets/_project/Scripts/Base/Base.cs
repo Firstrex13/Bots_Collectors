@@ -70,25 +70,7 @@ public class Base : MonoBehaviour
         }
     }
 
-    public void SendUnitBack(ObjectPicker picker)
-    {
-        if (picker.TryGetComponent<UnitMover>(out UnitMover mover))
-        {
-            mover.GoToTarget(_storage.transform.position);
-            picker.GotObject -= SendUnitBack;
-        }
-    }
 
-    public void SendUnitToWaitingZone(Unit unit)
-    {
-        if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
-        {
-            mover.GoToTarget(_watingZone.transform.position);
-            _freeUnits.Add(unit);
-            _ocupiedUnits.Remove(unit);
-            unit.BecameFree -= SendUnitToWaitingZone;
-        }
-    }
 
     private IEnumerator SendUnitsCoroutine()
     {
@@ -123,10 +105,8 @@ public class Base : MonoBehaviour
 
                 if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
                 {
-                    picker.SetAime(pickingObject);
+                    unit.SendForResourse(pickingObject);
                     _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
-                    picker.GotObject += SendUnitBack;
-                    unit.BecameFree += SendUnitToWaitingZone;
                     _ocupiedUnits.Add(unit);
                     _freeUnits.Remove(unit);
                     return;

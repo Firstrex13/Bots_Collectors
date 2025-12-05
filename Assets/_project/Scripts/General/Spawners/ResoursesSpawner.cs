@@ -19,6 +19,12 @@ public class ResoursesSpawner : MonoBehaviour
     private void Start()
     {
         _pool = new ObjectPool<PickingObject>(_prefab, _count);
+
+        if (_createCoroutine != null)
+        {
+            StopCoroutine(_createCoroutine);
+        }
+
         _createCoroutine = StartCoroutine(Create());
     }
 

@@ -6,7 +6,7 @@ public class UnitSpawner : MonoBehaviour
 
     public Unit Create(Transform position)
     {
-        Unit unit = Instantiate(_prefab, position.position, transform.rotation);
+        Unit unit = Instantiate(_prefab, position.position, transform.rotation, transform);
 
         return unit;
     }

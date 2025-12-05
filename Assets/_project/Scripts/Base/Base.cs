@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,6 @@ public class Base : MonoBehaviour
     [SerializeField] private List<Unit> _freeUnits;
     [SerializeField] private List<Unit> _ocupiedUnits;
     [SerializeField] private Storage _storage;
-    [SerializeField] private StorageCollision _storageCollision;
-    [SerializeField] private Transform _watingZone;
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
 
@@ -18,33 +17,36 @@ public class Base : MonoBehaviour
     private int _startCount = 3;
 
     private Coroutine _createUnitsCoroutine;
-    private Coroutine _sendUnitsCoroutine;
 
     private void OnEnable()
     {
         _radar.ResoursesFound += _pickingObjectsService.FillList;
-        _storageCollision.ResourseDropped += _pickingObjectsService.RemoveFromList;
+        _pickingObjectsService.ListUpdated += OnResourseFound;
+
     }
 
     private void OnDisable()
     {
         _radar.ResoursesFound -= _pickingObjectsService.FillList;
-        _storageCollision.ResourseDropped -= _pickingObjectsService.RemoveFromList;
+        _pickingObjectsService.ListUpdated -= OnResourseFound;
+
     }
 
     private void Start()
     {
+        if (_createUnitsCoroutine != null)
+        {
+            StopCoroutine(_createUnitsCoroutine);
+        }
+
         if (_freeUnits.Count < _startCount)
             _createUnitsCoroutine = StartCoroutine(CreateUnits());
-        _sendUnitsCoroutine = StartCoroutine(SendUnitsCoroutine());
     }
 
     private void OnDestroy()
     {
         if (_createUnitsCoroutine != null)
             StopCoroutine(_createUnitsCoroutine);
-        if (_sendUnitsCoroutine != null)
-            StopCoroutine(_sendUnitsCoroutine);
     }
 
     private void OnValidate()
@@ -62,32 +64,9 @@ public class Base : MonoBehaviour
 
             if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
             {
-                mover.GoToTarget(_watingZone.transform.position);
                 _freeUnits.Add(unit);
 
                 yield return delay;
-            }
-        }
-    }
-
-
-
-    private IEnumerator SendUnitsCoroutine()
-    {
-        WaitForSeconds delay = new WaitForSeconds(_delay);
-
-        while (enabled)
-        {
-            yield return delay;
-
-            List<PickingObject> pickingObjects = _pickingObjectsService.GetPickingObjects();
-
-            if (pickingObjects.Count > 0)
-            {
-                for (int i = 0; i < pickingObjects.Count; i++)
-                {
-                    SendForResourse(pickingObjects[i]);
-                }
             }
         }
     }
@@ -106,12 +85,29 @@ public class Base : MonoBehaviour
                 if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
                 {
                     unit.SendForResourse(pickingObject);
+                    unit.BecameFree += MoveUnitToFree;
                     _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
-                    _ocupiedUnits.Add(unit);
-                    _freeUnits.Remove(unit);
+                    MoveUnitToOcupied(unit);
                     return;
                 }
             }
         }
+    }
+    private void MoveUnitToFree(Unit unit)
+    {
+        unit.BecameFree -= MoveUnitToFree;
+        _freeUnits.Add(unit);
+        _ocupiedUnits.Remove(unit);
+    }
+
+    private void MoveUnitToOcupied(Unit unit)
+    {
+        _ocupiedUnits.Add(unit);
+        _freeUnits.Remove(unit);
+    }
+
+    private void OnResourseFound(PickingObject pickingObject)
+    {
+        SendForResourse(pickingObject);
     }
 }

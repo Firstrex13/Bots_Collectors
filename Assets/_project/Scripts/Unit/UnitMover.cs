@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,7 +10,7 @@ public class UnitMover : MonoBehaviour
     private Transform _transform;
     private float _distanceToInteracte = 2f;
 
-    private Coroutine _move;
+    private Coroutine _checkDistance;
 
     public event Action ReachedTarget;
 
@@ -22,32 +23,34 @@ public class UnitMover : MonoBehaviour
 
     private void OnDisable()
     {
-        if (_move != null)
+        if (_checkDistance != null)
         {
-            StopCoroutine(_move);
+            StopCoroutine(_checkDistance);
         }
     }
 
     public void GoToTarget(Vector3 position)
     {
-        if (_move != null)
+        _agent.SetDestination(position);
+
+        if (_checkDistance != null)
         {
-            StopCoroutine(_move);
+            StopCoroutine(_checkDistance);
         }
 
-        _move = StartCoroutine(Move(position));
-
+        _checkDistance = StartCoroutine(CheckDistance(position));
     }
 
-    private IEnumerator Move(Vector3 position)
+    private IEnumerator CheckDistance(Vector3 position)
     {
-        _agent.SetDestination(position);
+        yield return null;
 
         while (_agent.remainingDistance > _distanceToInteracte)
         {
             yield return null;
         }
 
+        _checkDistance = null;
         ReachedTarget?.Invoke();
     }
 }

@@ -22,7 +22,6 @@ public class ObjectPicker : MonoBehaviour
 
         if (_aimedObject != null)
         {
-            Debug.Log("Picked");
             _currentObject = _aimedObject;
             _currentObject.PickUp(transform, _holdDistance);
         }

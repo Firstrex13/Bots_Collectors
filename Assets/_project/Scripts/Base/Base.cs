@@ -7,12 +7,14 @@ public class Base : MonoBehaviour
 {
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private UnitSpawner _unitSpawner;
-    [SerializeField] private List<Unit> _freeUnits;
-    [SerializeField] private List<Unit> _ocupiedUnits;
     [SerializeField] private Storage _storage;
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
     [SerializeField] private ResoursesSpawner _resourseSpawner;
+    [SerializeField] private Transform _watingZone;
+
+    private List<Unit> _ocupiedUnits = new List<Unit>();
+    private List<Unit> _freeUnits = new List<Unit>();
 
     private float _delay = 3f;
     private int _startCount = 3;
@@ -23,15 +25,12 @@ public class Base : MonoBehaviour
     {
         _radar.ResoursesFound += _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated += OnResourseFound;
-        _resourseSpawner.Returned += _pickingObjectsService.RemoveFromList;
-
     }
 
     private void OnDisable()
     {
         _radar.ResoursesFound -= _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated -= OnResourseFound;
-        _resourseSpawner.Returned -= _pickingObjectsService.RemoveFromList;
     }
 
     private void Start()
@@ -51,6 +50,11 @@ public class Base : MonoBehaviour
             StopCoroutine(_createUnitsCoroutine);
     }
 
+    public void Initialize(ResoursesSpawner resourseSpawner)
+    {
+        _resourseSpawner = resourseSpawner;
+    }
+
     private void OnValidate()
     {
         _radar ??= GetComponent<Radar>();
@@ -63,6 +67,7 @@ public class Base : MonoBehaviour
         for (int i = 0; i < _startCount; i++)
         {
             Unit unit = _unitSpawner.Create(_spawnPoint);
+            unit.Initialize(transform, _watingZone);
 
             if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
             {
@@ -73,9 +78,10 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void SendForResourse(PickingObject pickingObject)
+    private void SendUnit(PickingObject pickingObject)
     {
         pickingObject.Dropped += _storage.IncreaseCount;
+        pickingObject.ReadyToBackToPull += _pickingObjectsService.RemoveFromList;
 
         foreach (var unit in _freeUnits)
         {
@@ -111,8 +117,15 @@ public class Base : MonoBehaviour
         _freeUnits.Remove(unit);
     }
 
-    private void OnResourseFound(PickingObject pickingObject)
+    private void OnResourseFound()
     {
-        SendForResourse(pickingObject);
+        PickingObject resourse;
+
+        resourse = _pickingObjectsService.GetFreeObject();
+
+        if (resourse)
+        {
+            SendUnit(resourse);
+        }
     }
 }

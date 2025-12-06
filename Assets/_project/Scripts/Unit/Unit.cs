@@ -10,8 +10,9 @@ public class Unit : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private ObjectPicker _picker;
     [SerializeField] private UnitMover _mover;
-    [SerializeField] private Transform _basePosition;
-    [SerializeField] private Transform _watingZone;
+
+    private Transform _basePosition;
+    private Transform _watingZone;
 
     private bool _pickedUp;
 
@@ -27,6 +28,12 @@ public class Unit : MonoBehaviour
     {
         _mover.ReachedTarget -= OnReachedTarget;
         _picker.HaveNoCurrentObject -= GoToWaitingZone;
+    }
+
+    public void Initialize(Transform basePosition, Transform waitingZone)
+    {
+        _basePosition = basePosition;
+        _watingZone = waitingZone;
     }
 
     public void DropObject()

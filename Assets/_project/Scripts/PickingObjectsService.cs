@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PickingObjectsService : MonoBehaviour
@@ -8,7 +7,7 @@ public class PickingObjectsService : MonoBehaviour
     [SerializeField] private List<PickingObject> _pickingObjectsFree = new List<PickingObject>();
     [SerializeField] private List<PickingObject> _pickingObjectsOcupaied = new List<PickingObject>();
 
-    public event Action<PickingObject> ListUpdated;
+    public event Action ListUpdated;
 
     public void AddToList(PickingObject pickingObject)
     {
@@ -23,7 +22,7 @@ public class PickingObjectsService : MonoBehaviour
         }
 
         _pickingObjectsFree.Add(pickingObject);
-        ListUpdated?.Invoke(pickingObject);
+        ListUpdated?.Invoke();
     }
 
     public void PutResourseInOcupiedList(PickingObject resourse)
@@ -35,6 +34,16 @@ public class PickingObjectsService : MonoBehaviour
     public void RemoveFromList(PickingObject pickingObject)
     {
         _pickingObjectsOcupaied.Remove(pickingObject);
+    }
+
+    public PickingObject GetFreeObject()
+    {
+        if(_pickingObjectsFree[0] == null)
+        {
+            return null;
+        }
+
+        return _pickingObjectsFree[0];
     }
 }
 

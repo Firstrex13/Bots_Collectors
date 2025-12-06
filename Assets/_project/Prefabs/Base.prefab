@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 8166484657668053203}
   - component: {fileID: 1914884146947762431}
   - component: {fileID: 3179561082196654434}
-  - component: {fileID: 2891981358627911338}
   m_Layer: 0
   m_Name: SorageZone
   m_TagString: Untagged
@@ -138,19 +137,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourseCountView
   _storage: {fileID: 1914884146947762431}
   _count: {fileID: 0}
---- !u!114 &2891981358627911338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 40478937907333111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef92d4bb6306e5d48b2559a4a59a4430, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PickingObjectCollision
-  _storage: {fileID: 1914884146947762431}
 --- !u!1 &3326569114545470085
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,16 +360,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Base
   _spawnPoint: {fileID: 2113129633064774851}
   _unitSpawner: {fileID: 7209698343000691164}
-  _freeUnits:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _ocupiedUnits: []
   _storage: {fileID: 1914884146947762431}
-  _storageCollision: {fileID: 2891981358627911338}
-  _watingZone: {fileID: 6776372689588672068}
   _radar: {fileID: 2578843616571841711}
   _pickingObjectsService: {fileID: 7317708773574852524}
+  _resourseSpawner: {fileID: 0}
+  _watingZone: {fileID: 6776372689588672068}
 --- !u!114 &7209698343000691164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,6 +407,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feaf960deb0f14743b0b15a06a42b4ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickingObjectsService
-  _resourseSpawner: {fileID: 0}
   _pickingObjectsFree: []
   _pickingObjectsOcupaied: []

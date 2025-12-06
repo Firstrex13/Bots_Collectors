@@ -17,7 +17,6 @@ public class ResoursesSpawner : MonoBehaviour
     private Coroutine _createCoroutine;
 
     public event Action Created;
-    public event Action<PickingObject> Returned;
 
     private void Start()
     {
@@ -53,7 +52,6 @@ public class ResoursesSpawner : MonoBehaviour
             Created?.Invoke();
             resourse.ReadyToBackToPull += OnReturnToPool;
             resourse.Initialize(new Vector3(UnityEngine.Random.Range(-_zone, _zone), _height, UnityEngine.Random.Range(-_zone, _zone)));
-            Returned?.Invoke(resourse);
         }
     } 
 }

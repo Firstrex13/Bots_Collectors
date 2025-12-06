@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,7 +12,6 @@ public class UnitMover : MonoBehaviour
     private Coroutine _checkDistance;
 
     public event Action ReachedTarget;
-
 
     private void Awake()
     {

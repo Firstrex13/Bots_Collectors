@@ -7,8 +7,6 @@ public class CameraMove : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed;
 
-    private Input _inputActions;
-
     private Transform _transform;
     private int _screenBorder = 100;
     private float _screenWidth;
@@ -16,7 +14,6 @@ public class CameraMove : MonoBehaviour
 
     private void Start()
     {
-        _inputActions = new Input();
         _transform = transform;
         _screenWidth = Screen.width;
         _screenHeigth = Screen.height;

@@ -106,10 +106,10 @@ public partial class @Input: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2f87f52a-640f-4f6e-9abc-ebdc189858c1"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard and Mouse"",
                     ""action"": ""Actions"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

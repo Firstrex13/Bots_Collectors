@@ -6,20 +6,18 @@ public class SelectableObject : MonoBehaviour
     [SerializeField] private bool _hovered;
     [SerializeField] private Player _player;
 
-    private bool _selected;
-
-    public bool ObjectSelected => _selected; 
-
     public event Action Selected;
+
+    public bool Hovered => _hovered;
 
     private void OnEnable()
     {
-        _player.LMBPressed += SelectBase;
+        _player.LMBPressed += PlaceFlag;
     }
 
     private void OnDisable()
     {
-        _player.LMBPressed -= SelectBase;
+        _player.LMBPressed -= PlaceFlag;
     }
 
     public void MakeHovered()
@@ -32,19 +30,8 @@ public class SelectableObject : MonoBehaviour
         _hovered = false;
     }
 
-    private void SelectBase()
+    private void PlaceFlag()
     {
-        if (_hovered)
-        {
-            _selected = true;
-            Selected?.Invoke();
-        }
+        Selected?.Invoke();
     }
-
-    public void Unselect()
-    {
-        _selected = false;
-    }
-
-    
 }

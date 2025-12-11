@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Base : MonoBehaviour
 {
@@ -12,10 +10,8 @@ public class Base : MonoBehaviour
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
     [SerializeField] private Transform _watingZone;
-    [SerializeField] private SelectableObject _selectableObject;
-    [SerializeField] private Flag _flag;
-    [SerializeField] private CameraRay _cameraRay;
     [SerializeField] private Player _player;
+    [SerializeField] private FlagPlacer _flagPlacer;
 
     private List<Unit> _ocupiedUnits = new List<Unit>();
     private List<Unit> _freeUnits = new List<Unit>();
@@ -33,8 +29,7 @@ public class Base : MonoBehaviour
         _radar.ResoursesFound += _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated += OnResourseFound;
         _storage.IsEnoughForUnit += CreateUnit;
-        _selectableObject.Selected += TurnOnFlag;
-     //   _player.LMBPressed += SetFlag;
+        _flagPlacer.FlagPlaced += SendUnitToBuildBase;
     }
 
     private void OnDisable()
@@ -42,8 +37,7 @@ public class Base : MonoBehaviour
         _radar.ResoursesFound -= _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated -= OnResourseFound;
         _storage.IsEnoughForUnit -= CreateUnit;
-        _selectableObject.Selected -= TurnOnFlag;
-      //  _player.LMBPressed -= SetFlag;
+        _flagPlacer.FlagPlaced -= SendUnitToBuildBase;
     }
 
     private void Start()
@@ -57,14 +51,6 @@ public class Base : MonoBehaviour
             _createUnitsCoroutine = StartCoroutine(CreateStartUnits());
     }
 
-    private void Update()
-    {
-        if (_flag.Selected)
-        {
-            _flag.transform.position = _cameraRay.GroundPoint;
-        }
-    }
-
     private void OnDestroy()
     {
         if (_createUnitsCoroutine != null)
@@ -74,23 +60,6 @@ public class Base : MonoBehaviour
     private void OnValidate()
     {
         _radar ??= GetComponent<Radar>();
-    }
-
-    private void TurnOnFlag()
-    {
-        _flag.gameObject.SetActive(true);
-        _flag.MakeSelected();
-    }
-
-    private void SetFlag()
-    {
-        if (_selectableObject.ObjectSelected)
-        {
-            if (_flag.Selected)
-            {
-                _flag.MakeUnselected();
-            }
-        }
     }
 
     private void CreateUnit()
@@ -119,7 +88,21 @@ public class Base : MonoBehaviour
         }
     }
 
-    private void SendUnit(PickingObject pickingObject)
+    private void SendUnitToBuildBase(Vector3 target)
+    {
+        foreach (var unit in _freeUnits)
+        {
+            if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
+            {
+                mover.GoToTarget(target);
+
+                MoveUnitToOcupied(unit);
+                return;
+            }
+        }
+    }
+
+    private void SendUnitForResourse(PickingObject pickingObject)
     {
         pickingObject.ReadyToBackToPull += RemoveFromList;
 
@@ -172,7 +155,7 @@ public class Base : MonoBehaviour
 
         if (resourse)
         {
-            SendUnit(resourse);
+            SendUnitForResourse(resourse);
         }
     }
 }

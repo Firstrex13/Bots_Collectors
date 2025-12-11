@@ -147,7 +147,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5047124446654310296}
-  - component: {fileID: 7384141822252471083}
   m_Layer: 0
   m_Name: Flag
   m_TagString: Untagged
@@ -172,18 +171,6 @@ Transform:
   - {fileID: 427500663287446274}
   m_Father: {fileID: 165227333797129730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7384141822252471083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 215078020401640940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d7535a931d609b478d8aed55b5b90fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &630363579552882653
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,6 +614,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 165227333797129730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5029769889340914114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1986139826551090014}
+  - component: {fileID: 2026582318729983817}
+  m_Layer: 0
+  m_Name: FlagPlacer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1986139826551090014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029769889340914114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 165227333797129730}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2026582318729983817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5029769889340914114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d7535a931d609b478d8aed55b5b90fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5704597045739358979
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,6 +703,7 @@ GameObject:
   - component: {fileID: 7209698343000691164}
   - component: {fileID: 2578843616571841711}
   - component: {fileID: 7317708773574852524}
+  - component: {fileID: 2967555461957302832}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -698,6 +730,7 @@ Transform:
   - {fileID: 6776372689588672068}
   - {fileID: 5047124446654310296}
   - {fileID: 4648796182615895920}
+  - {fileID: 1986139826551090014}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &9101346013560440585
@@ -733,15 +766,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7e3feee5f44daa4f96f73e7b4893c7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Base
-  _canvas: {fileID: 0}
-  _mouseHovered: 0
   _spawnPoint: {fileID: 2113129633064774851}
   _unitSpawner: {fileID: 7209698343000691164}
   _storage: {fileID: 1914884146947762431}
   _radar: {fileID: 2578843616571841711}
   _pickingObjectsService: {fileID: 7317708773574852524}
-  _resourseSpawner: {fileID: 0}
   _watingZone: {fileID: 6776372689588672068}
+  _selectableObject: {fileID: 2967555461957302832}
+  _flag: {fileID: 0}
+  _cameraRay: {fileID: 0}
+  _player: {fileID: 0}
 --- !u!114 &7209698343000691164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -786,6 +820,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PickingObjectsService
   _pickingObjectsFree: []
   _pickingObjectsOcupaied: []
+--- !u!114 &2967555461957302832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6357828160701988159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f5d5c8411308141bc167bf8c3c1129, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hovered: 0
+  _player: {fileID: 0}
 --- !u!1 &6834774360484225726
 GameObject:
   m_ObjectHideFlags: 0

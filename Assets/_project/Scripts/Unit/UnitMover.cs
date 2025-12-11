@@ -11,8 +11,6 @@ public class UnitMover : MonoBehaviour
 
     private Coroutine _checkDistance;
 
-    public event Action ReachedTarget;
-
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -27,7 +25,7 @@ public class UnitMover : MonoBehaviour
         }
     }
 
-    public void GoToTarget(Vector3 position)
+    public void GoToTarget(Vector3 position, Action action)
     {
         _agent.SetDestination(position);
 
@@ -36,10 +34,10 @@ public class UnitMover : MonoBehaviour
             StopCoroutine(_checkDistance);
         }
 
-        _checkDistance = StartCoroutine(CheckDistance(position));
+        _checkDistance = StartCoroutine(CheckDistance(position, action));
     }
 
-    private IEnumerator CheckDistance(Vector3 position)
+    private IEnumerator CheckDistance(Vector3 position, Action action)
     {
         yield return null;
 
@@ -49,6 +47,6 @@ public class UnitMover : MonoBehaviour
         }
 
         _checkDistance = null;
-        ReachedTarget?.Invoke();
+        action?.Invoke();
     }
 }

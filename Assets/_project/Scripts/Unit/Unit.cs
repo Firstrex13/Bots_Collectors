@@ -14,19 +14,19 @@ public class Unit : MonoBehaviour
     private Transform _basePosition;
     private Transform _watingZone;
 
-    private bool _pickedUp;
+
 
     public event Action<Unit> BecameFree;
 
     private void OnEnable()
     {
-        _mover.ReachedTarget += OnReachedTarget;
+
         _picker.HaveNoCurrentObject += GoToWaitingZone;
     }
 
     private void OnDisable()
     {
-        _mover.ReachedTarget -= OnReachedTarget;
+
         _picker.HaveNoCurrentObject -= GoToWaitingZone;
     }
 
@@ -43,29 +43,32 @@ public class Unit : MonoBehaviour
 
     public void SendForResourse(PickingObject pickingObject)
     {
-        _pickedUp = false;
+
         _picker.SetAimedObject(pickingObject);
-        _mover.GoToTarget(pickingObject.transform.position);
+        _mover.GoToTarget(pickingObject.transform.position, GoToBase);
+    }
+
+    private void GoToBase()
+    {
+        _picker.PickUp();
+        _mover.GoToTarget(_basePosition.position, GiveResourseToBase);
+
+    }
+
+    private void GiveResourseToBase()
+    {
+        _picker.Drop();
+        BecameFree?.Invoke(this);
+    }
+
+    public void GoToTarget(Vector3 position, Action action)
+    {
+        _mover.GoToTarget(position, action);
     }
 
     private void GoToWaitingZone()
     {
-        _mover.GoToTarget(_watingZone.position);
-    }
-
-    private void OnReachedTarget()
-    {
-        if (_pickedUp)
-        {
-            _picker.Drop();
-            BecameFree?.Invoke(this);
-        }
-        else
-        {
-            _picker.PickUp();
-            _mover.GoToTarget(_basePosition.position);
-            _pickedUp = true;
-        }
+        _mover.GoToTarget(_watingZone.position, null);
     }
 }
 

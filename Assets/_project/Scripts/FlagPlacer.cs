@@ -19,6 +19,14 @@ public class FlagPlacer : MonoBehaviour
         _selectableObject.Selected += SetFlag;
     }
 
+    private void Update()
+    {
+        if (_selected)
+        {
+            _flag.transform.position = _cameraRay.GroundPoint;
+        }
+    }
+
     private void TurnOnFlag()
     {
         _flag.gameObject.SetActive(true);
@@ -50,6 +58,7 @@ public class FlagPlacer : MonoBehaviour
         {
             if (_selected)
             {
+                _selected = false;
                 _flag.transform.position = _cameraRay.GroundPoint;
                 FlagPlaced?.Invoke(_flag.transform.position);
             }

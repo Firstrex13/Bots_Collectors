@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class Base : MonoBehaviour
     private int _unitCost = 3;
 
     private Coroutine _createUnitsCoroutine;
+
+    public event Action<Vector3, Unit> BaseBuildRequested;
 
     public int UnitCost => _unitCost;
 
@@ -90,41 +93,38 @@ public class Base : MonoBehaviour
 
     private void SendUnitToBuildBase(Vector3 target)
     {
-        foreach (var unit in _freeUnits)
+        if (_freeUnits.Count == 0)
         {
-            if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
-            {
-                mover.GoToTarget(target);
-
-                MoveUnitToOcupied(unit);
-                return;
-            }
+            return;
         }
+
+        Unit unit = _freeUnits[0];
+
+        unit.GoToTarget(target, () =>
+            {
+                BaseBuildRequested?.Invoke(target, unit);
+                Debug.Log("BuildNewBase");
+            }
+            );
+
+        _freeUnits.Remove(unit);
+        return;
     }
 
     private void SendUnitForResourse(PickingObject pickingObject)
     {
+        if (_freeUnits.Count == 0)
+        {
+            return;
+        }
         pickingObject.ReadyToBackToPull += RemoveFromList;
 
-        foreach (var unit in _freeUnits)
-        {
-            if (unit.TryGetComponent<ObjectPicker>(out ObjectPicker picker))
-            {
-                if (picker.CurrentObject != null)
-                {
-                    return;
-                }
-
-                if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
-                {
-                    unit.SendForResourse(pickingObject);
-                    unit.BecameFree += MoveUnitToFree;
-                    _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
-                    MoveUnitToOcupied(unit);
-                    return;
-                }
-            }
-        }
+        Unit unit = _freeUnits[0];
+        unit.SendForResourse(pickingObject);
+        unit.BecameFree += MoveUnitToFree;
+        _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
+        MoveUnitToOcupied(unit);
+        return;
     }
 
     private void RemoveFromList(PickingObject pickingObject)

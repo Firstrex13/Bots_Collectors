@@ -669,7 +669,6 @@ GameObject:
   - component: {fileID: 165227333797129730}
   - component: {fileID: 9101346013560440585}
   - component: {fileID: 8642430849416617400}
-  - component: {fileID: 7209698343000691164}
   - component: {fileID: 2578843616571841711}
   - component: {fileID: 7317708773574852524}
   m_Layer: 0
@@ -734,26 +733,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Base
   _spawnPoint: {fileID: 2113129633064774851}
-  _unitSpawner: {fileID: 7209698343000691164}
+  _unitSpawner: {fileID: 0}
   _storage: {fileID: 1914884146947762431}
   _radar: {fileID: 2578843616571841711}
   _pickingObjectsService: {fileID: 7317708773574852524}
   _watingZone: {fileID: 6776372689588672068}
   _flagPlacer: {fileID: 0}
   _flag: {fileID: 2218181590253190161}
---- !u!114 &7209698343000691164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6357828160701988159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2f9b25b4d89ae545980adea5a5a4be0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitSpawner
-  _prefab: {fileID: 992568602059368437, guid: af68c6c70fa37594587270edaf5786df, type: 3}
 --- !u!114 &2578843616571841711
 MonoBehaviour:
   m_ObjectHideFlags: 0

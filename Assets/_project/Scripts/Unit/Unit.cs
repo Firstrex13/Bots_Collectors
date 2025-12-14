@@ -10,23 +10,20 @@ public class Unit : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private ObjectPicker _picker;
     [SerializeField] private UnitMover _mover;
+    [SerializeField] private BaseBuilder _baseBuilder;
 
-    private Transform _basePosition;
-    private Transform _watingZone;
-
-
+    [SerializeField] private Transform _basePosition;
+    [SerializeField] private Transform _watingZone;
 
     public event Action<Unit> BecameFree;
 
     private void OnEnable()
     {
-
         _picker.HaveNoCurrentObject += GoToWaitingZone;
     }
 
     private void OnDisable()
     {
-
         _picker.HaveNoCurrentObject -= GoToWaitingZone;
     }
 
@@ -34,6 +31,12 @@ public class Unit : MonoBehaviour
     {
         _basePosition = basePosition;
         _watingZone = waitingZone;
+        
+    }
+
+    public void Initialize(BaseBuilder baseBuilder)
+    {
+        _baseBuilder = baseBuilder;
     }
 
     public void DropObject()
@@ -45,6 +48,11 @@ public class Unit : MonoBehaviour
     {
         _picker.SetAimedObject(pickingObject);
         _mover.GoToTarget(pickingObject.transform.position, GoToBase);
+    }
+
+    public void BuildBase(Vector3 position, Unit unit)
+    {
+        _baseBuilder.BuildNewBase(position, this);
     }
 
     private void GoToBase()

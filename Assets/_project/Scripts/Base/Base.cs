@@ -13,9 +13,9 @@ public class Base : MonoBehaviour
     [SerializeField] private Transform _watingZone;
     [SerializeField] private FlagPlacer _flagPlacer;
     [SerializeField] private Flag _flag;
+    [SerializeField] private List<Unit> _freeUnits = new List<Unit>();
 
     private List<Unit> _ocupiedUnits = new List<Unit>();
-    private List<Unit> _freeUnits = new List<Unit>();
 
     private float _delay = 3f;
     private int _startCount = 3;
@@ -28,8 +28,6 @@ public class Base : MonoBehaviour
 
     public int UnitCost => _unitCost;
     public Flag Flag => _flag;
-
-
 
     private void OnEnable()
     {
@@ -51,13 +49,13 @@ public class Base : MonoBehaviour
     {
         _flagPlacer.FlagPlaced += SendUnitToBuildBase;
 
-        if (_createUnitsCoroutine != null)
-        {
-            StopCoroutine(_createUnitsCoroutine);
-        }
+        //if (_createUnitsCoroutine != null)
+        //{
+        //    StopCoroutine(_createUnitsCoroutine);
+        //}
 
-        if (_freeUnits.Count < _startCount)
-            _createUnitsCoroutine = StartCoroutine(CreateStartUnits());
+        //if (_freeUnits.Count < _startCount)
+        //    _createUnitsCoroutine = StartCoroutine(CreateStartUnits());
     }
 
     private void OnDestroy()
@@ -73,9 +71,10 @@ public class Base : MonoBehaviour
         _radar ??= GetComponent<Radar>();
     }
 
-    public void Initialize(FlagPlacer flagPlacer)
+    public void Initialize(FlagPlacer flagPlacer, UnitSpawner spawner)
     {
         _flagPlacer = flagPlacer;
+        _unitSpawner = spawner;
     }
 
     public void AddUnit(Unit unit)
@@ -96,23 +95,23 @@ public class Base : MonoBehaviour
         _storage.SpendResourse(_unitCost);
     }
 
-    private IEnumerator CreateStartUnits()
-    {
-        WaitForSeconds delay = new WaitForSeconds(_delay);
+    //private IEnumerator CreateStartUnits()
+    //{
+    //    WaitForSeconds delay = new WaitForSeconds(_delay);
 
-        for (int i = 0; i < _startCount; i++)
-        {
-            Unit unit = _unitSpawner.Create(_spawnPoint);
-            unit.Initialize(transform, _watingZone);
+    //    for (int i = 0; i < _startCount; i++)
+    //    {
+    //        Unit unit = _unitSpawner.Create(_spawnPoint);
+    //        unit.Initialize(transform, _watingZone);
 
-            if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
-            {
-                _freeUnits.Add(unit);
+    //        if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
+    //        {
+    //            _freeUnits.Add(unit);
 
-                yield return delay;
-            }
-        }
-    }
+    //            yield return delay;
+    //        }
+    //    }
+    //}
 
     private void SendUnitToBuildBase(Vector3 target)
     {
@@ -123,13 +122,14 @@ public class Base : MonoBehaviour
 
         Unit unit = _freeUnits[0];
 
-        unit.GoToTarget(target, () =>
+        unit.GoToTarget(target, () => 
             {
-                BaseBuildRequested?.Invoke(target, unit);
+                unit.BuildBase(target, unit);
+                _freeUnits.Remove(unit);
+                _flagPlacer.TurnOffFlag(_flag);
             }
             );
 
-        _freeUnits.Remove(unit);
         return;
     }
 

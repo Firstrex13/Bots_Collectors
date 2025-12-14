@@ -38,7 +38,7 @@ public class FlagPlacer : MonoBehaviour
         _selected = true;
     }
 
-    private void TurnOffFlag(Flag flag)
+    public void TurnOffFlag(Flag flag)
     {
         Debug.Log("TurnedOff");
         flag.gameObject.SetActive(false);

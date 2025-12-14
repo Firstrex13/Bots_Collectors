@@ -8,6 +8,7 @@ public class Storage : MonoBehaviour
 
     public event Action<int> Updated;
     public event Action IsEnoughForUnit;
+    public event Action IsEnoughForBase;
     public int ResourseCount => _resoursesCount;
 
     public void IncreaseCount()
@@ -15,9 +16,14 @@ public class Storage : MonoBehaviour
         _resoursesCount++;
         Updated?.Invoke(ResourseCount);
 
-        if (_resoursesCount >= _base.UnitCost)
+        if (_base.CurrentState == Base.State.BuildingUnits && _resoursesCount >= _base.UnitCost)
         {
             IsEnoughForUnit?.Invoke();
+        }
+
+        if(_base.CurrentState == Base.State.BuildingNewBase && _resoursesCount >= _base.BaseCost)
+        {
+            IsEnoughForBase?.Invoke();
         }
     }
 

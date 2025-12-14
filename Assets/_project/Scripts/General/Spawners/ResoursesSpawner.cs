@@ -12,7 +12,7 @@ public class ResoursesSpawner : MonoBehaviour
 
     private ObjectPool<PickingObject> _pool;
 
-    private float _delay = 5f;
+    private float _delay = 3f;
 
     private Coroutine _createCoroutine;
 

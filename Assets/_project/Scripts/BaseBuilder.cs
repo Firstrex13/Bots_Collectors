@@ -15,5 +15,10 @@ public class BaseBuilder : MonoBehaviour
 
         newBase.ClearList();
         newBase.AddUnit(unit);
+
+        Transform _basePostion  = newBase.GetComponent<Transform>();
+        Transform waitingZone = newBase.WatingZone;
+
+        unit.Initialize(_basePostion, waitingZone);
     }
 }

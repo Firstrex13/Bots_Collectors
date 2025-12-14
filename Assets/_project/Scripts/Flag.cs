@@ -2,8 +2,21 @@ using UnityEngine;
 
 public class Flag : MonoBehaviour
 {
-    private void Start()
+    public void TurnOnFlag()
     {
-        gameObject.SetActive(false);
+        Debug.Log("TurnedOn");
+        gameObject.SetActive(true);
+
+    }
+
+    public void TurnOffFlag()
+    {
+        Debug.Log("TurnedOff");
+        if (gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+
+            transform.position = Vector3.zero;
+        }
     }
 }

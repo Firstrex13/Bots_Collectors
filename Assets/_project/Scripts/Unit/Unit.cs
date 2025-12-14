@@ -15,23 +15,19 @@ public class Unit : MonoBehaviour
     [SerializeField] private Transform _basePosition;
     [SerializeField] private Transform _watingZone;
 
+    private bool _ocupied;
+
     public event Action<Unit> BecameFree;
 
-    private void OnEnable()
-    {
-        _picker.HaveNoCurrentObject += GoToWaitingZone;
-    }
-
-    private void OnDisable()
-    {
-        _picker.HaveNoCurrentObject -= GoToWaitingZone;
-    }
+    public bool Ocupied => _ocupied; 
 
     public void Initialize(Transform basePosition, Transform waitingZone)
     {
-        _basePosition = basePosition;
-        _watingZone = waitingZone;
-        
+        if (_basePosition != basePosition && _watingZone != waitingZone)
+        {
+            _basePosition = basePosition;
+            _watingZone = waitingZone;
+        }
     }
 
     public void Initialize(BaseBuilder baseBuilder)
@@ -46,12 +42,13 @@ public class Unit : MonoBehaviour
 
     public void SendForResourse(PickingObject pickingObject)
     {
+        
         _picker.SetAimedObject(pickingObject);
         _mover.GoToTarget(pickingObject.transform.position, GoToBase);
     }
 
     public void BuildBase(Vector3 position, Unit unit)
-    {
+    {       
         _baseBuilder.BuildNewBase(position, this);
     }
 
@@ -64,16 +61,19 @@ public class Unit : MonoBehaviour
     private void GiveResourseToBase()
     {
         _picker.Drop();
+        GoToWaitingZone();
         BecameFree?.Invoke(this);
     }
 
     public void GoToTarget(Vector3 position, Action action)
     {
+        _ocupied = true;
         _mover.GoToTarget(position, action);
     }
 
-    private void GoToWaitingZone()
+    public void GoToWaitingZone()
     {
+        _ocupied = false;
         _mover.GoToTarget(_watingZone.position, null);
     }
 }

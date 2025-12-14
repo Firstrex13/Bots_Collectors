@@ -1,10 +1,15 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Base : MonoBehaviour
 {
+    public enum State
+    {
+        BuildingUnits,
+        BuildingNewBase
+    }
+
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Storage _storage;
@@ -17,24 +22,29 @@ public class Base : MonoBehaviour
 
     private List<Unit> _ocupiedUnits = new List<Unit>();
 
-    private float _delay = 3f;
-    private int _startCount = 3;
     private int _unitCost = 3;
     private int _baseCost = 5;
 
     private Coroutine _createUnitsCoroutine;
+    private Coroutine _wait;
+
+    [SerializeField] private State _currentState;
 
     public event Action<Vector3, Unit> BaseBuildRequested;
 
     public int UnitCost => _unitCost;
+    public int BaseCost => _baseCost;
     public Flag Flag => _flag;
+    public Transform WatingZone => _watingZone;
+
+    public State CurrentState => _currentState;
 
     private void OnEnable()
     {
         _radar.ResoursesFound += _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated += OnResourseFound;
         _storage.IsEnoughForUnit += CreateUnit;
-
+        _storage.IsEnoughForBase += SendUnitToBuildBase;
     }
 
     private void OnDisable()
@@ -42,26 +52,16 @@ public class Base : MonoBehaviour
         _radar.ResoursesFound -= _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated -= OnResourseFound;
         _storage.IsEnoughForUnit -= CreateUnit;
-
+        _storage.IsEnoughForBase -= SendUnitToBuildBase;
     }
 
     private void Start()
     {
-        _flagPlacer.FlagPlaced += SendUnitToBuildBase;
-
-        //if (_createUnitsCoroutine != null)
-        //{
-        //    StopCoroutine(_createUnitsCoroutine);
-        //}
-
-        //if (_freeUnits.Count < _startCount)
-        //    _createUnitsCoroutine = StartCoroutine(CreateStartUnits());
+        _currentState = State.BuildingUnits;
     }
 
     private void OnDestroy()
     {
-        _flagPlacer.FlagPlaced -= SendUnitToBuildBase;
-
         if (_createUnitsCoroutine != null)
             StopCoroutine(_createUnitsCoroutine);
     }
@@ -87,46 +87,55 @@ public class Base : MonoBehaviour
         _freeUnits.Clear();
     }
 
-    private void CreateUnit()
+    public void ChangeState()
     {
-        Unit unit = _unitSpawner.Create(_spawnPoint);
-        unit.Initialize(transform, _watingZone);
-        _freeUnits.Add(unit);
-        _storage.SpendResourse(_unitCost);
+        if (_currentState != State.BuildingNewBase)
+        {
+            _currentState = State.BuildingNewBase;
+        }
+        else
+        {
+            _currentState = State.BuildingUnits;
+        }
     }
 
-    //private IEnumerator CreateStartUnits()
-    //{
-    //    WaitForSeconds delay = new WaitForSeconds(_delay);
-
-    //    for (int i = 0; i < _startCount; i++)
-    //    {
-    //        Unit unit = _unitSpawner.Create(_spawnPoint);
-    //        unit.Initialize(transform, _watingZone);
-
-    //        if (unit.TryGetComponent<UnitMover>(out UnitMover mover))
-    //        {
-    //            _freeUnits.Add(unit);
-
-    //            yield return delay;
-    //        }
-    //    }
-    //}
-
-    private void SendUnitToBuildBase(Vector3 target)
+    private void CreateUnit()
     {
+        if (_currentState == State.BuildingUnits)
+        {
+            Unit unit = _unitSpawner.Create(_spawnPoint);
+            unit.Initialize(transform, _watingZone);
+            _freeUnits.Add(unit);
+            _storage.SpendResourse(_unitCost);
+        }
+    }
+
+    private void SendUnitToBuildBase()
+    {
+        if (_currentState == State.BuildingNewBase)
+        {
+            ChangeState();
+        }
+
         if (_freeUnits.Count == 0)
         {
             return;
         }
 
+        _storage.SpendResourse(_baseCost);
+
         Unit unit = _freeUnits[0];
 
-        unit.GoToTarget(target, () => 
+        MoveUnitToOcupied(unit);
+
+        unit.GoToTarget(_flag.transform.position, () =>
             {
-                unit.BuildBase(target, unit);
+                unit.BuildBase(_flag.transform.position, unit);
                 _freeUnits.Remove(unit);
-                _flagPlacer.TurnOffFlag(_flag);
+                _flag.TurnOffFlag();
+                unit.GoToWaitingZone();
+                MoveUnitToFree(unit);
+                _currentState = State.BuildingUnits;
             }
             );
 
@@ -140,12 +149,19 @@ public class Base : MonoBehaviour
             return;
         }
         pickingObject.ReadyToBackToPull += RemoveFromList;
-        Unit unit = _freeUnits[0];
-        unit.SendForResourse(pickingObject);
-        unit.BecameFree += MoveUnitToFree;
-        _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
-        MoveUnitToOcupied(unit);
-        return;
+
+        for (int i = 0; i < _freeUnits.Count; i++)
+        {
+            if (!_freeUnits[i].Ocupied)
+            {
+                Unit unit = _freeUnits[i];
+                unit.SendForResourse(pickingObject);
+                unit.BecameFree += MoveUnitToFree;
+                _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
+                MoveUnitToOcupied(unit);
+                return;
+            }
+        }
     }
 
     private void RemoveFromList(PickingObject pickingObject)

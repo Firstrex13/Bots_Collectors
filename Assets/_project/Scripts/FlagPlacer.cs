@@ -9,8 +9,9 @@ public class FlagPlacer : MonoBehaviour
     [SerializeField] private bool _selected;
 
     private Flag _flag;
+    private Base _base;
 
-    public event Action<Vector3> FlagPlaced;
+    public event Action FlagPlaced;
     public bool Selected => _selected;
 
     private void OnEnable()
@@ -31,39 +32,26 @@ public class FlagPlacer : MonoBehaviour
         }
     }
 
-    private void TurnOnFlag(Flag flag)
-    {
-        Debug.Log("TurnedOn");
-        flag.gameObject.SetActive(true);
-        _selected = true;
-    }
-
-    public void TurnOffFlag(Flag flag)
-    {
-        Debug.Log("TurnedOff");
-        flag.gameObject.SetActive(false);
-        _selected = false;
-        flag.transform.position = Vector3.zero;
-    }
-
     private void SetFlag(Base baseItem)
     {
         Debug.Log("123");
-
         if (baseItem != null)
         {
-            _flag = baseItem.Flag;
+            _base = baseItem;
+            _flag = _base.Flag;
         }
 
         if (_selector.Base != null)
         {
             if (!_selected)
             {
-                TurnOnFlag(_flag);
+                _flag.TurnOnFlag();
+                _selected = true;
             }
             else
             {
-                TurnOffFlag(_flag);
+                _flag.TurnOffFlag();
+                _selected = false;
             }
         }
         else
@@ -71,8 +59,9 @@ public class FlagPlacer : MonoBehaviour
             if (_selected)
             {
                 Debug.Log("Placed");
+                _base.ChangeState();
                 _selected = false;
-                FlagPlaced?.Invoke(_flag.transform.position);
+                FlagPlaced?.Invoke();
             }
         }
     }

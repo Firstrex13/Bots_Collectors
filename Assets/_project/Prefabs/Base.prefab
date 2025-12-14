@@ -636,6 +636,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6776372689588672068}
+  - component: {fileID: 7327365481732057299}
   m_Layer: 0
   m_Name: WaitingZone
   m_TagString: Untagged
@@ -658,6 +659,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 165227333797129730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7327365481732057299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5704597045739358979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37759fe9db9727f4b84295d6780ab213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6357828160701988159
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,6 +753,11 @@ MonoBehaviour:
   _watingZone: {fileID: 6776372689588672068}
   _flagPlacer: {fileID: 0}
   _flag: {fileID: 2218181590253190161}
+  _freeUnits:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _currentState: 0
 --- !u!114 &2578843616571841711
 MonoBehaviour:
   m_ObjectHideFlags: 0

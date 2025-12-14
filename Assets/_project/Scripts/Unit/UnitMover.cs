@@ -11,6 +11,8 @@ public class UnitMover : MonoBehaviour
 
     private Coroutine _checkDistance;
 
+
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -27,6 +29,7 @@ public class UnitMover : MonoBehaviour
 
     public void GoToTarget(Vector3 position, Action action)
     {
+
         _agent.SetDestination(position);
 
         if (_checkDistance != null)

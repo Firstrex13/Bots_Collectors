@@ -1,22 +1,26 @@
 using System;
 using UnityEngine;
-using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 public class FlagPlacer : MonoBehaviour
 {
-    [SerializeField] private Flag _flag;
-    [SerializeField] private SelectableObject _selectableObject;
+    [SerializeField] private Selector _selector;
     [SerializeField] private CameraRay _cameraRay;
     [SerializeField] private Player _player;
-
     [SerializeField] private bool _selected;
+
+    private Flag _flag;
 
     public event Action<Vector3> FlagPlaced;
     public bool Selected => _selected;
 
     private void OnEnable()
     {
-        _selectableObject.Selected += SetFlag;
+        _selector.Selected += SetFlag;
+    }
+
+    private void OnDisable()
+    {
+        _selector.Selected -= SetFlag;
     }
 
     private void Update()
@@ -27,43 +31,49 @@ public class FlagPlacer : MonoBehaviour
         }
     }
 
-    private void TurnOnFlag()
+    private void TurnOnFlag(Flag flag)
     {
-        _flag.gameObject.SetActive(true);
+        Debug.Log("TurnedOn");
+        flag.gameObject.SetActive(true);
         _selected = true;
-
     }
 
-    private void TurnOffFlag()
+    private void TurnOffFlag(Flag flag)
     {
-        _flag.gameObject.SetActive(false);
+        Debug.Log("TurnedOff");
+        flag.gameObject.SetActive(false);
         _selected = false;
-        _flag.transform.position = Vector3.zero;
+        flag.transform.position = Vector3.zero;
     }
 
-    private void SetFlag()
+    private void SetFlag(Base baseItem)
     {
-        if (_selectableObject.Hovered)
+        Debug.Log("123");
+
+        if (baseItem != null)
+        {
+            _flag = baseItem.Flag;
+        }
+
+        if (_selector.Base != null)
         {
             if (!_selected)
             {
-                TurnOnFlag();
+                TurnOnFlag(_flag);
             }
             else
             {
-                TurnOffFlag();
+                TurnOffFlag(_flag);
             }
         }
-        else if (!_selectableObject.Hovered)
+        else
         {
             if (_selected)
             {
+                Debug.Log("Placed");
                 _selected = false;
-                _flag.transform.position = _cameraRay.GroundPoint;
                 FlagPlaced?.Invoke(_flag.transform.position);
             }
         }
-
-        _player.LMBPressed -= SetFlag;
     }
 }

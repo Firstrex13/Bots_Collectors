@@ -1,14 +1,14 @@
 using System;
 using UnityEngine;
 
-public class SelectableObject : MonoBehaviour
+public class Selector : MonoBehaviour
 {
-    [SerializeField] private bool _hovered;
     [SerializeField] private Player _player;
+    [SerializeField] private Base _base;
 
-    public event Action Selected;
+    public event Action<Base> Selected;
 
-    public bool Hovered => _hovered;
+    public Base Base => _base;
 
     private void OnEnable()
     {
@@ -20,18 +20,22 @@ public class SelectableObject : MonoBehaviour
         _player.LMBPressed -= PlaceFlag;
     }
 
-    public void MakeHovered()
+    public void MakeHovered(Base baseItem)
     {
-        _hovered = true;
+        _base = baseItem;
     }
 
     public void MakeUnhovered()
     {
-        _hovered = false;
+        if (_base != null)
+        {
+            _base = null;
+        }
     }
 
     private void PlaceFlag()
     {
-        Selected?.Invoke();
+        Selected?.Invoke(_base);
+        _base = null;
     }
 }

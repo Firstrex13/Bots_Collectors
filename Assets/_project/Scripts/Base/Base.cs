@@ -11,8 +11,8 @@ public class Base : MonoBehaviour
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
     [SerializeField] private Transform _watingZone;
-    [SerializeField] private Player _player;
     [SerializeField] private FlagPlacer _flagPlacer;
+    [SerializeField] private Flag _flag;
 
     private List<Unit> _ocupiedUnits = new List<Unit>();
     private List<Unit> _freeUnits = new List<Unit>();
@@ -20,19 +20,23 @@ public class Base : MonoBehaviour
     private float _delay = 3f;
     private int _startCount = 3;
     private int _unitCost = 3;
+    private int _baseCost = 5;
 
     private Coroutine _createUnitsCoroutine;
 
     public event Action<Vector3, Unit> BaseBuildRequested;
 
     public int UnitCost => _unitCost;
+    public Flag Flag => _flag;
+
+
 
     private void OnEnable()
     {
         _radar.ResoursesFound += _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated += OnResourseFound;
         _storage.IsEnoughForUnit += CreateUnit;
-        _flagPlacer.FlagPlaced += SendUnitToBuildBase;
+
     }
 
     private void OnDisable()
@@ -40,11 +44,13 @@ public class Base : MonoBehaviour
         _radar.ResoursesFound -= _pickingObjectsService.AddToList;
         _pickingObjectsService.ListUpdated -= OnResourseFound;
         _storage.IsEnoughForUnit -= CreateUnit;
-        _flagPlacer.FlagPlaced -= SendUnitToBuildBase;
+
     }
 
     private void Start()
     {
+        _flagPlacer.FlagPlaced += SendUnitToBuildBase;
+
         if (_createUnitsCoroutine != null)
         {
             StopCoroutine(_createUnitsCoroutine);
@@ -56,6 +62,8 @@ public class Base : MonoBehaviour
 
     private void OnDestroy()
     {
+        _flagPlacer.FlagPlaced -= SendUnitToBuildBase;
+
         if (_createUnitsCoroutine != null)
             StopCoroutine(_createUnitsCoroutine);
     }
@@ -63,6 +71,21 @@ public class Base : MonoBehaviour
     private void OnValidate()
     {
         _radar ??= GetComponent<Radar>();
+    }
+
+    public void Initialize(FlagPlacer flagPlacer)
+    {
+        _flagPlacer = flagPlacer;
+    }
+
+    public void AddUnit(Unit unit)
+    {
+        _freeUnits.Add(unit);
+    }
+
+    public void ClearList()
+    {
+        _freeUnits.Clear();
     }
 
     private void CreateUnit()
@@ -103,7 +126,6 @@ public class Base : MonoBehaviour
         unit.GoToTarget(target, () =>
             {
                 BaseBuildRequested?.Invoke(target, unit);
-                Debug.Log("BuildNewBase");
             }
             );
 
@@ -118,7 +140,6 @@ public class Base : MonoBehaviour
             return;
         }
         pickingObject.ReadyToBackToPull += RemoveFromList;
-
         Unit unit = _freeUnits[0];
         unit.SendForResourse(pickingObject);
         unit.BecameFree += MoveUnitToFree;

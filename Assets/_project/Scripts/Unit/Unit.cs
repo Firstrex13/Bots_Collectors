@@ -43,7 +43,6 @@ public class Unit : MonoBehaviour
 
     public void SendForResourse(PickingObject pickingObject)
     {
-
         _picker.SetAimedObject(pickingObject);
         _mover.GoToTarget(pickingObject.transform.position, GoToBase);
     }
@@ -52,7 +51,6 @@ public class Unit : MonoBehaviour
     {
         _picker.PickUp();
         _mover.GoToTarget(_basePosition.position, GiveResourseToBase);
-
     }
 
     private void GiveResourseToBase()

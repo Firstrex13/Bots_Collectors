@@ -5,7 +5,7 @@ public class CameraRay : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private float _rayDistance;
-    [SerializeField] private SelectableObject _selectableObject;
+    [SerializeField] private Selector _selector;
 
     [SerializeField] private Vector3 _groundPoint;
 
@@ -37,24 +37,22 @@ public class CameraRay : MonoBehaviour
             return;
         }
 
-        if (hitInfo.collider.TryGetComponent(out SelectableObject selectable))
+        if (hitInfo.collider.TryGetComponent<Base>(out Base baseItem))
         {
-            _selectableObject = selectable;
-            _selectableObject.MakeHovered();
+            _selector.MakeHovered(baseItem);
         }
         else
         {
-            if (_selectableObject != null)
+            if (_selector != null)
             {
-                _selectableObject.MakeUnhovered();
-                _selectableObject = null;
+                _selector.MakeUnhovered();
+
             }
         }
 
         if (hitInfo.collider.TryGetComponent<Ground>(out _))
         {
             _groundPoint = hitInfo.point;
-        }
-               
+        }         
     }
 }

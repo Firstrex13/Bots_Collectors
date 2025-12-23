@@ -45,7 +45,6 @@ public class Radar : MonoBehaviour
             }
 
             ResoursesFound?.Invoke(pickingObjects);
-            Debug.Log("Scannig");
         }
     }
 }

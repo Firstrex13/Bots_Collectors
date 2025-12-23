@@ -683,6 +683,7 @@ GameObject:
   - component: {fileID: 9101346013560440585}
   - component: {fileID: 8642430849416617400}
   - component: {fileID: 2578843616571841711}
+  - component: {fileID: 2576661496130975681}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -769,11 +770,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812371d2b187bdf499d4aff6542b8768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Radar
-  _radius: 25
+  _radius: 30
   _mask:
     serializedVersion: 2
     m_Bits: 64
-  _period: 4
+  _period: 5
+--- !u!208 &2576661496130975681
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6357828160701988159}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1, y: 0.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &6834774360484225726
 GameObject:
   m_ObjectHideFlags: 0

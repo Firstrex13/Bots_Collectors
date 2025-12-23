@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class Base : MonoBehaviour
@@ -29,8 +29,6 @@ public class Base : MonoBehaviour
     private Coroutine _wait;
 
     [SerializeField] private State _currentState;
-
-    public event Action<Vector3, Unit> BaseBuildRequested;
 
     public int UnitCost => _unitCost;
     public int BaseCost => _baseCost;
@@ -150,6 +148,10 @@ public class Base : MonoBehaviour
             return;
         }
 
+        if(pickingObject == null)
+        {
+            return;
+        }
 
         for (int i = 0; i < _freeUnits.Count; i++)
         {
@@ -168,8 +170,8 @@ public class Base : MonoBehaviour
 
     private void RemoveFromList(PickingObject pickingObject)
     {
-        pickingObject.ReadyToBackToPull -= RemoveFromList;
         _pickingObjectsService.RemoveFromList(pickingObject);
+        pickingObject.ReadyToBackToPull -= RemoveFromList;
     }
 
     private void MoveUnitToFree(Unit unit)
@@ -194,7 +196,6 @@ public class Base : MonoBehaviour
 
         {
             SendUnitForResourse(resourses);
-            Debug.Log("Послал юнита");
         }
     }
 }

@@ -1,3 +1,4 @@
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class BaseBuilder : MonoBehaviour
@@ -7,6 +8,7 @@ public class BaseBuilder : MonoBehaviour
     [SerializeField] private FlagPlacer _flagPacer;
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
+    [SerializeField] private NavMeshSurface _navMeshSurface;
 
     public void BuildNewBase(Vector3 position, Unit unit)
     {
@@ -14,6 +16,7 @@ public class BaseBuilder : MonoBehaviour
 
         newBase.Initialize(_flagPacer, _unitSpawner, _pickingObjectsService);
         newBase.gameObject.SetActive(true);
+
 
         newBase.ClearList();
         newBase.AddUnit(unit);

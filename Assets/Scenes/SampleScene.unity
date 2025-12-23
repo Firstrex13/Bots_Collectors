@@ -167,24 +167,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2578843616571841711, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
-      propertyPath: _period
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2578843616571841711, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
-      propertyPath: _radius
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 6357828160701988159, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
       propertyPath: m_Name
       value: Base (1)
       objectReference: {fileID: 0}
     - target: {fileID: 6357828160701988159, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
       propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
-      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
@@ -195,6 +183,10 @@ PrefabInstance:
       propertyPath: _unitSpawner
       value: 
       objectReference: {fileID: 1198382019}
+    - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
+      propertyPath: _navMeshSurface
+      value: 
+      objectReference: {fileID: 231360452}
     - target: {fileID: 8642430849416617400, guid: 790b8e7eb505e6e4ca48ea95aecf52e2, type: 3}
       propertyPath: _pickingObjectsService
       value: 
@@ -697,6 +689,7 @@ MonoBehaviour:
   _flagPacer: {fileID: 1711456167}
   _unitSpawner: {fileID: 1198382019}
   _pickingObjectsService: {fileID: 376956976}
+  _navMeshSurface: {fileID: 231360452}
 --- !u!4 &891514180
 Transform:
   m_ObjectHideFlags: 0

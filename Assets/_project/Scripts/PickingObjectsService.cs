@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PickingObjectsService : MonoBehaviour
@@ -14,11 +13,19 @@ public class PickingObjectsService : MonoBehaviour
     {
         for (int i = 0; i < pickingObjects.Count; i++)
         {
-            if (!_pickingObjectsFree.Contains(pickingObjects[i]))
+            if (_pickingObjectsFree.Contains(pickingObjects[i]))
             {
-                _pickingObjectsFree.Add(pickingObjects[i]);
-                ListUpdated?.Invoke();
-            }     
+                return;
+            }
+
+            if (_pickingObjectsOcupaied.Contains(pickingObjects[i]))
+            {
+                return;
+            }
+
+
+            _pickingObjectsFree.Add(pickingObjects[i]);
+            ListUpdated?.Invoke();
         }
     }
 
@@ -34,8 +41,8 @@ public class PickingObjectsService : MonoBehaviour
     }
 
     public PickingObject GetFreeObjects()
-    {     
-        if(_pickingObjectsFree.Count < 1)
+    {
+        if (_pickingObjectsFree.Count < 1)
         {
             return null;
         }

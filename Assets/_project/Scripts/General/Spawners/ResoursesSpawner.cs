@@ -53,5 +53,5 @@ public class ResoursesSpawner : MonoBehaviour
             resourse.ReadyToBackToPull += OnReturnToPool;
             resourse.Initialize(new Vector3(UnityEngine.Random.Range(-_zone, _zone), _height, UnityEngine.Random.Range(-_zone, _zone)));
         }
-    } 
+    }
 }

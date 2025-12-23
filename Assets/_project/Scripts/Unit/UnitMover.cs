@@ -11,8 +11,6 @@ public class UnitMover : MonoBehaviour
 
     private Coroutine _checkDistance;
 
-
-
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();

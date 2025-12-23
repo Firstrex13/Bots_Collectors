@@ -15,11 +15,11 @@ public class Unit : MonoBehaviour
     [SerializeField] private Transform _basePosition;
     [SerializeField] private Transform _watingZone;
 
-    private bool _ocupied;
+    private bool _isOcupied;
 
     public event Action<Unit> BecameFree;
 
-    public bool Ocupied => _ocupied; 
+    public bool IsOcupied => _isOcupied; 
 
     public void Initialize(Transform basePosition, Transform waitingZone)
     {
@@ -67,13 +67,13 @@ public class Unit : MonoBehaviour
 
     public void GoToTarget(Vector3 position, Action action)
     {
-        _ocupied = true;
+        _isOcupied = true;
         _mover.GoToTarget(position, action);
     }
 
     public void GoToWaitingZone()
     {
-        _ocupied = false;
+        _isOcupied = false;
         _mover.GoToTarget(_watingZone.position, null);
     }
 }

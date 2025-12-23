@@ -2,16 +2,13 @@ using UnityEngine;
 
 public class Flag : MonoBehaviour
 {
-    public void TurnOnFlag()
+    public void TurnOn()
     {
-        Debug.Log("TurnedOn");
         gameObject.SetActive(true);
-
     }
 
-    public void TurnOffFlag()
+    public void TurnOff()
     {
-        Debug.Log("TurnedOff");
         if (gameObject.activeSelf)
         {
             gameObject.SetActive(false);

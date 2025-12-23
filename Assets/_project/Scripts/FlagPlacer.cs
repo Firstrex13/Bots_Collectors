@@ -44,12 +44,12 @@ public class FlagPlacer : MonoBehaviour
         {
             if (!_selected)
             {
-                _flag.TurnOnFlag();
+                _flag.TurnOn();
                 _selected = true;
             }
             else
             {
-                _flag.TurnOffFlag();
+                _flag.TurnOff();
                 _selected = false;
             }
         }
@@ -57,9 +57,13 @@ public class FlagPlacer : MonoBehaviour
         {
             if (_selected)
             {
-                _base.ChangeState();
-                _selected = false;
-                FlagPlaced?.Invoke();
+                BaseStates baseStates;
+                if (_base.TryGetComponent(out baseStates))
+                {
+                    baseStates.ChangeState();
+                    _selected = false;
+                    FlagPlaced?.Invoke();
+                }
             }
         }
     }

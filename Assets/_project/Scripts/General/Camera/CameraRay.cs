@@ -18,7 +18,7 @@ public class CameraRay : MonoBehaviour
 
     private void Update()
     {
-        SetRay();
+        ShootRay();
     }
 
     private void OnValidate()
@@ -26,7 +26,7 @@ public class CameraRay : MonoBehaviour
         _camera ??= GetComponent<Camera>();
     }
 
-    private void SetRay()
+    private void ShootRay()
     {
         Ray ray = _camera.ScreenPointToRay(Mouse.current.position.ReadValue());
 

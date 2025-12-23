@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.AI.Navigation;
 using UnityEngine;
 
 public class Base : MonoBehaviour
@@ -16,9 +15,9 @@ public class Base : MonoBehaviour
     [SerializeField] private Radar _radar;
     [SerializeField] private PickingObjectsService _pickingObjectsService;
     [SerializeField] private Transform _watingZone;
-    [SerializeField] private FlagPlacer _flagPlacer;
     [SerializeField] private Flag _flag;
     [SerializeField] private List<Unit> _freeUnits = new List<Unit>();
+    [SerializeField] private BaseStates _states;
 
     private List<Unit> _ocupiedUnits = new List<Unit>();
 
@@ -28,14 +27,10 @@ public class Base : MonoBehaviour
     private Coroutine _createUnitsCoroutine;
     private Coroutine _wait;
 
-    [SerializeField] private State _currentState;
-
     public int UnitCost => _unitCost;
     public int BaseCost => _baseCost;
     public Flag Flag => _flag;
     public Transform WatingZone => _watingZone;
-
-    public State CurrentState => _currentState;
 
     private void OnEnable()
     {
@@ -53,11 +48,6 @@ public class Base : MonoBehaviour
         _storage.IsEnoughForBase -= SendUnitToBuildBase;
     }
 
-    private void Start()
-    {
-        _currentState = State.BuildingUnits;
-    }
-
     private void OnDestroy()
     {
         if (_createUnitsCoroutine != null)
@@ -69,9 +59,9 @@ public class Base : MonoBehaviour
         _radar ??= GetComponent<Radar>();
     }
 
-    public void Initialize(FlagPlacer flagPlacer, UnitSpawner spawner, PickingObjectsService pickingObjectsService)
+    public void Initialize(UnitSpawner spawner, PickingObjectsService pickingObjectsService)
     {
-        _flagPlacer = flagPlacer;
+
         _unitSpawner = spawner;
         _pickingObjectsService = pickingObjectsService;
     }
@@ -86,21 +76,9 @@ public class Base : MonoBehaviour
         _freeUnits.Clear();
     }
 
-    public void ChangeState()
-    {
-        if (_currentState != State.BuildingNewBase)
-        {
-            _currentState = State.BuildingNewBase;
-        }
-        else
-        {
-            _currentState = State.BuildingUnits;
-        }
-    }
-
     private void CreateUnit()
     {
-        if (_currentState == State.BuildingUnits)
+        if (_states.CurrentState == BaseStates.State.BuildingUnits)
         {
             Unit unit = _unitSpawner.Create(_spawnPoint);
             unit.Initialize(transform, _watingZone);
@@ -111,9 +89,9 @@ public class Base : MonoBehaviour
 
     private void SendUnitToBuildBase()
     {
-        if (_currentState == State.BuildingNewBase)
+        if (_states.CurrentState != BaseStates.State.BuildingNewBase)
         {
-            ChangeState();
+           _states.ChangeState();
         }
 
         if (_freeUnits.Count == 0)
@@ -131,10 +109,10 @@ public class Base : MonoBehaviour
             {
                 unit.BuildBase(_flag.transform.position, unit);
                 _freeUnits.Remove(unit);
-                _flag.TurnOffFlag();
+                _flag.TurnOff();
                 unit.GoToWaitingZone();
                 MoveUnitToFree(unit);
-                _currentState = State.BuildingUnits;
+                _states.ChangeState();
             }
             );
 
@@ -155,7 +133,7 @@ public class Base : MonoBehaviour
 
         for (int i = 0; i < _freeUnits.Count; i++)
         {
-            if (!_freeUnits[i].Ocupied)
+            if (!_freeUnits[i].IsOcupied)
             {
                 pickingObject.ReadyToBackToPull += RemoveFromList;
                 _pickingObjectsService.PutResourseInOcupiedList(pickingObject);

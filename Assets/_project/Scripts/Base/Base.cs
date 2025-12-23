@@ -71,10 +71,11 @@ public class Base : MonoBehaviour
         _radar ??= GetComponent<Radar>();
     }
 
-    public void Initialize(FlagPlacer flagPlacer, UnitSpawner spawner)
+    public void Initialize(FlagPlacer flagPlacer, UnitSpawner spawner, PickingObjectsService pickingObjectsService)
     {
         _flagPlacer = flagPlacer;
         _unitSpawner = spawner;
+        _pickingObjectsService = pickingObjectsService;
     }
 
     public void AddUnit(Unit unit)
@@ -148,16 +149,17 @@ public class Base : MonoBehaviour
         {
             return;
         }
-        pickingObject.ReadyToBackToPull += RemoveFromList;
+
 
         for (int i = 0; i < _freeUnits.Count; i++)
         {
             if (!_freeUnits[i].Ocupied)
             {
+                pickingObject.ReadyToBackToPull += RemoveFromList;
+                _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
                 Unit unit = _freeUnits[i];
                 unit.SendForResourse(pickingObject);
                 unit.BecameFree += MoveUnitToFree;
-                _pickingObjectsService.PutResourseInOcupiedList(pickingObject);
                 MoveUnitToOcupied(unit);
                 return;
             }
@@ -166,8 +168,8 @@ public class Base : MonoBehaviour
 
     private void RemoveFromList(PickingObject pickingObject)
     {
+        pickingObject.ReadyToBackToPull -= RemoveFromList;
         _pickingObjectsService.RemoveFromList(pickingObject);
-        pickingObject.ReadyToBackToPull -= _pickingObjectsService.RemoveFromList;
     }
 
     private void MoveUnitToFree(Unit unit)
@@ -186,13 +188,13 @@ public class Base : MonoBehaviour
 
     private void OnResourseFound()
     {
-        PickingObject resourse;
+        PickingObject resourses;
 
-        resourse = _pickingObjectsService.GetFreeObject();
+        resourses = _pickingObjectsService.GetFreeObjects();
 
-        if (resourse)
         {
-            SendUnitForResourse(resourse);
+            SendUnitForResourse(resourses);
+            Debug.Log("Послал юнита");
         }
     }
 }

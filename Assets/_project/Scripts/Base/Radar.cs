@@ -13,7 +13,7 @@ public class Radar : MonoBehaviour
 
     private Collider[] _colliders = new Collider[20];
 
-    public event Action<PickingObject> ResoursesFound;
+    public event Action<List<PickingObject>> ResoursesFound;
 
     private void Start()
     {
@@ -34,15 +34,18 @@ public class Radar : MonoBehaviour
             yield return delay;
             int count = Physics.OverlapSphereNonAlloc(transform.position, _radius, _colliders, _mask);
 
-            PickingObject pickingObject;
+            List<PickingObject> pickingObjects = new List<PickingObject>();
 
             for (int i = 0; i < count; ++i)
             {
-                if (_colliders[i].TryGetComponent<PickingObject>(out pickingObject))
+                if (_colliders[i].TryGetComponent(out PickingObject pickingObject))
                 {
-                    ResoursesFound?.Invoke(pickingObject);
+                    pickingObjects.Add(pickingObject);
                 }
             }
+
+            ResoursesFound?.Invoke(pickingObjects);
+            Debug.Log("Scannig");
         }
     }
 }

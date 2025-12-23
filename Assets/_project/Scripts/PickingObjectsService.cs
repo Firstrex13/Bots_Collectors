@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PickingObjectsService : MonoBehaviour
@@ -9,20 +10,16 @@ public class PickingObjectsService : MonoBehaviour
 
     public event Action ListUpdated;
 
-    public void AddToList(PickingObject pickingObject)
+    public void AddToList(List<PickingObject> pickingObjects)
     {
-        if (_pickingObjectsFree.Contains(pickingObject))
+        for (int i = 0; i < pickingObjects.Count; i++)
         {
-            return;
+            if (!_pickingObjectsFree.Contains(pickingObjects[i]))
+            {
+                _pickingObjectsFree.Add(pickingObjects[i]);
+                ListUpdated?.Invoke();
+            }     
         }
-
-        if (_pickingObjectsOcupaied.Contains(pickingObject))
-        {
-            return;
-        }
-
-        _pickingObjectsFree.Add(pickingObject);
-        ListUpdated?.Invoke();
     }
 
     public void PutResourseInOcupiedList(PickingObject resourse)
@@ -36,9 +33,9 @@ public class PickingObjectsService : MonoBehaviour
         _pickingObjectsOcupaied.Remove(pickingObject);
     }
 
-    public PickingObject GetFreeObject()
-    {
-        if(_pickingObjectsFree[0] == null)
+    public PickingObject GetFreeObjects()
+    {     
+        if(_pickingObjectsFree.Count < 1)
         {
             return null;
         }

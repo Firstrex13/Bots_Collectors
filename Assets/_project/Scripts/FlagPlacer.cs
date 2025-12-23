@@ -34,7 +34,6 @@ public class FlagPlacer : MonoBehaviour
 
     private void SetFlag(Base baseItem)
     {
-        Debug.Log("123");
         if (baseItem != null)
         {
             _base = baseItem;
@@ -58,7 +57,6 @@ public class FlagPlacer : MonoBehaviour
         {
             if (_selected)
             {
-                Debug.Log("Placed");
                 _base.ChangeState();
                 _selected = false;
                 FlagPlaced?.Invoke();
